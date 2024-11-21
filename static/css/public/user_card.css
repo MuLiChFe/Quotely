@@ -1,0 +1,41 @@
+.floating-component {
+    position: fixed; /* 固定在屏幕上的位置 */
+    bottom: 55px; /* 贴近屏幕底部 */
+    left: 5px; /* 贴近屏幕左边 */
+    width: 270px; /* 固定宽度 */
+    height: auto; /* 固定高度 */
+    background: #fff; /* 背景色，可根据需要调整 */
+    border: #d8d8d8 1px solid; /* 边框样式 */
+    border-radius: 18px; /* 圆角 */
+    z-index: 9999000009; /* 确保在其他元素之上 */
+    overflow: auto; /* 如果内容超出容器则允许滚动 */
+    display: block;
+    transition: opacity 0.1s ease;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.floating-component.show {
+    opacity: 1;
+    pointer-events: auto;
+
+}
+/* 整个屏幕的遮罩层 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 默认隐藏 */
+.hidden {
+    display: none;
+    z-index: 0;
+}

@@ -1,0 +1,174 @@
+/* 整体页面布局 */
+#page-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    flex-direction: row; /* 横向排列 */
+    height: 100vh; /* 使页面充满整个视口 */
+}
+
+/* 左侧栏样式 */
+#left-bar {
+    width: 50px; /* 默认宽度 */
+    background-color: #fafafa; /* 侧边栏背景颜色 */
+    position: fixed; /* 固定在左侧 */
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transition: width 0.3s ease; /* 宽度变化的平滑过渡效果 */
+    /*overflow: ; !* 隐藏溢出的内容 *!*/
+    padding: 0; /* 内边距 */
+    display: flex; /* 使用 flexbox 布局 */
+    flex-direction: column; /* 垂直排列 */
+    height: 100%; /* 保持高度 */
+}
+
+#left-bar.expanded {
+    width: 231px;  /* 展开时的宽度 */
+}
+
+#left-bar.expanded + #main-content {
+    margin-left: 231px; /* 左侧栏展开时的主内容区域左边距 */
+}
+
+#left-bar .container {
+    flex: 1; /* 自动分配剩余空间 */
+    min-width: 0; /* 防止内容溢出 */
+    margin: 0; /* 移除默认间距 */
+}
+
+/* 主内容区域样式 */
+#main-content {
+    margin-left: 50px; /* 默认情况下，主内容区域的左边距等于侧边栏的宽度 */
+    transition: margin-left 0.3s ease; /* 主内容区域的左边距过渡效果 */
+    padding: 20px; /* 主内容区域的内边距 */
+}
+
+/* 当侧边栏展开时，主内容区域的左边距增加 */
+#left-bar.expanded + #main-content {
+    margin-left: 231px; /* 左侧栏展开时的主内容区域左边距 */
+}
+
+.menu-item {
+    display: flex; /* 使用 flexbox */
+    align-items: center; /* 垂直对齐 */
+    overflow: hidden; /* 确保内容不超出容器 */
+    white-space: nowrap; /* 避免内容换行 */
+    text-overflow: ellipsis; /* 溢出时显示省略号 */
+}
+
+.menu-item a {
+    flex-shrink: 0; /* 链接不允许缩小 */
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.menu-item .explanation {
+    margin-left: 8px; /* 与 <a> 保持间距 */
+    flex-shrink: 1; /* 允许根据容器缩小 */
+    color: #666;
+    font-size: 0.9rem;
+    overflow: hidden; /* 避免超出容器 */
+    text-overflow: ellipsis; /* 超出时显示省略号 */
+    white-space: nowrap; /* 防止换行 */
+}
+
+.side-button {
+    display: inline-flex;
+    height: 32px !important;
+    transition: opacity 0.5s ease;
+}
+
+.side-button:hover {
+    cursor: pointer ;
+}
+
+.explanations{
+    white-space: nowrap;
+    opacity: 0; /* 初始隐藏 */
+    visibility: hidden; /* 确保不可见时不占空间 */
+    transition: opacity 0.5s ease;
+    text-align: left;
+    line-height: 1.1;
+    top:-1px;
+    display: none;
+    overflow: hidden;
+
+}
+.explanations.show {
+    opacity: 1; /* 显示时完全不透明 */
+    visibility: visible; /* 显示时可见 */
+    display: block;
+}
+
+
+.preview-only{
+    opacity: 1; /* 显示时完全不透明 */
+    visibility: visible; /* 显示时可见 */
+    transition: opacity 1s ease;
+}
+.preview-only.hide {
+    white-space: nowrap;
+    opacity: 0; /* 初始隐藏 */
+    visibility: hidden; /* 确保不可见时不占空间 */
+}
+
+.button-column {
+    position: absolute; /* 使用绝对定位 */
+    top: 0; /* 顶部对齐 */
+    right: 0; /* 始终对齐到左侧栏的右边 */
+    bottom: 0; /* 底部对齐 */
+    display: flex; /* 使用 flex 布局 */
+    align-items: center; /* 垂直居中 */
+    justify-content: flex-end; /* 水平居中 */
+    flex-direction: column; /* 垂直排列按钮 */
+    transition: width 0.3s ease; /* 宽度平滑过渡 */
+    transform:scale(1.3);
+}
+
+
+.toggle-sidebar{
+    position: absolute;
+    left: calc(100% + 2px);
+    bottom: 0;
+    width: 1px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+/* 按钮样式 */
+.button-column button {
+    width: 100%; /* 按钮宽度为容器宽度的 80% */
+    border: 1px;
+    background-color: lightgrey;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 100%;
+    transform: scaleX(0.1);
+}
+
+.button-column button:hover {
+    background-color: gray;
+    cursor: ew-resize;
+}
+
+.toggle-sidebar button {
+    position: relative; /* 为伪元素提供定位上下文 */
+    z-index: 1; /* 确保按钮本身位于伪元素上方 */
+}
+
+.toggle-sidebar button::before {
+    top: 0;
+    height: 100%;
+    content: '';
+    position: absolute;
+    left: -50px;
+    right: -30px;
+    z-index: -1; /* 伪元素在按钮下层 */
+    background: None; /* 确保伪元素不可见 */
+    pointer-events: all; /* 使伪元素响应鼠标事件 */
+}
+
+/*.toggle-sidebar button:hover::before {*/
+/*    background: rgba(0, 0, 0, 0.1); !* 可选：添加视觉提示 *!*/
+/*}*/

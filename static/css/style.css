@@ -1,0 +1,134 @@
+:root {
+    --platform-green: #0da37f;
+    --platform-green-hover: #0b9272;
+    --platform-error: #d00e17;
+    --platform-error-hover: #b8210c;
+}
+
+
+
+.btn-primary {
+    --bs-btn-bg: var(--platform-green) !important;
+    --bs-btn-hover-bg: var(--platform-green-hover) !important;
+    --bs-btn-active-bg: var(--platform-green-hover) !important;
+    border: None !important;
+}
+
+.btn-primary:focus, textarea:focus, select:focus {
+    --border-color: var(--platform-green-hover) !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 163, 127, 0.25) !important; /* 设置绿色阴影 */
+}
+
+.btn-warning {
+    --bs-btn-bg: var(--platform-error) !important;
+    --bs-btn-hover-bg: var(--platform-error-hover) !important;
+    --bs-btn-active-bg: var(--platform-error-hover) !important;
+    border: None !important;
+}
+
+.input-primary:focus, textarea:focus, select:focus {
+    border-color: var(--platform-green) !important; /* 设置绿色边框 */
+    box-shadow: 0 0 0 0.25rem rgba(13, 163, 127, 0.25) !important; /* 设置绿色阴影 */
+}
+
+.input-warning:focus, textarea:focus, select:focus {
+    border-color: var(--platform-error) !important; /* 设置绿色边框 */
+    box-shadow: 0 0 0 0.25rem rgb(168, 57, 57, 0.25) !important; /* 设置绿色阴影 */
+}
+
+.background-outline-btn {
+    display: block; /* 确保按钮是块级元素 */
+    width: 100%; /* 占满横向空间 */
+    background-color: white; /* 使用当前文本/背景色 */
+    border: lightgray 1px solid;
+    border-radius: 5px; /* 圆角 */
+    color: #000; /* 按钮文字颜色，可根据需要调整 */
+    text-align: center; /* 文本居中 */
+    overflow: hidden;
+    font-size: 16px; /* 调整按钮字体大小 */
+    cursor: pointer; /* 鼠标悬停时显示手型 */
+    height: 32px;
+    transition: background-color 0.3s ease; /* 平滑背景颜色过渡 */
+}
+
+.background-outline-btn:hover {
+    background-color: lightgray;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 15px;
+    visibility: hidden; /* 初始状态不可见 */
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+
+/* Tooltip显示时的样式 */
+.tooltip.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 添加小三角形，指向目标元素 */
+.tooltip::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid black; /* 这个颜色和背景颜色一致 */
+    top: 50%;
+    left: -6px; /* 根据需要调整箭头的位置 */
+    transform: translateY(-50%) rotate(180deg) scale(200%); /* 旋转90度 */
+}
+
+.background-btn {
+    display: block; /* 确保按钮是块级元素 */
+    width: 100%; /* 占满横向空间 */
+    background-color: white; /* 使用当前文本/背景色 */
+    border: None;
+    border-radius: 5px; /* 圆角 */
+    color: #000; /* 按钮文字颜色，可根据需要调整 */
+    text-align: center; /* 文本居中 */
+    overflow: hidden;
+    font-size: 16px; /* 调整按钮字体大小 */
+    cursor: pointer; /* 鼠标悬停时显示手型 */
+    height: 32px;
+    transition: background-color 0.3s ease; /* 平滑背景颜色过渡 */
+    text-underline: None;
+}
+
+.background-btn:hover {
+    background-color: lightgray;
+}
+
+.no-highlight {
+    user-select: none; /* 禁止选中 */
+}
+
+
+a.text-primary {
+    color: var(--platform-green) !important;
+}
+
+
+
+.text-warning {
+    color: var(--platform-error) !important;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.text-lightgray {
+    color: lightgray !important;
+}
+
