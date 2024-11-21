@@ -1,0 +1,69 @@
+{% extends 'template/user_base.html' %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/public/library/text_card.css' %}">
+{% endblock %}
+{% block main-body %}
+    <div id="main-content" class="col px-0">
+        <div class="container-fluid my-5 mx-4">
+            <div class="row w-100">
+                {% csrf_token %}
+                <div class="p-0 w-100 text-center align-items-center">
+                    <div class="w-100 fs-1" style="">Library</div>
+                    <div class="m-0 container mt-2 container-fluid col1">
+                        <div class="ps-2 d-flex flex-wrap pb-12 justify-content-between gap-1" id="films-row">
+                            <!-- Film cards will be dynamically loaded here -->
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 60vw;">
+                            <div class="modal-content">
+                                <div class="modal-header text-bottom p-2 px-4">
+                                    <h5 class="modal-title" id="bookModalLabel"></h5> &nbsp;|&nbsp;
+                                    <p class="p-0 m-0 " style="color: gray"><span id="modalBookAuthor" class="small"></span></p>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body pt-2" id="modalBody">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <img id="modalBookImage" class="img-fluid book-image" alt="">
+                                        </div>
+                                        <div class="col-4"  >
+                                            <div class="row text-start">
+                                                <p><strong>Type:</strong> <span id="modalBookType"></span></p>
+                                                <p><strong>Year:</strong> <span id="modalBookYear"></span></p>
+                                            </div>
+                                            <div class="row align-items-center" style="position: absolute; bottom: 5px; left: 0; width: 100%; padding: 10px; transform: translateX(33%);">
+                                                <button type="button" class="btn btn-primary" id="addToLibraryBtn" style="width:200px; margin: 0 auto;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle me-2" viewBox="0 0 16 16">
+                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                                    </svg>
+                                                    Add to Library
+                                                </button>
+                                                <button type="button" class="btn btn-danger" id="removeFromLibraryBtn"  style="display: block; width: 200px; margin: 0 auto;">
+                                                    Remove from Library
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/public/left_bar.js' %}"></script>
+    <script src="{% static 'js/public/user_card.js' %}"></script>
+    <script src="{% static 'js/tooltip.js' %}"></script>
+    <script type="module" src="{% static 'js/public/library/book-display.js' %}"></script>
+    <script>
+        var films = '{{films|safe}}';
+        var user = '{{user}}';
+    </script>
+{% endblock main-body %}

@@ -1,0 +1,11 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/public/header.css' %}">
+<div class="d-flex flex-row fixed-top justify-content-between w-100 align-items-center click-through">
+    <div>
+    </div>
+    <!-- Right Section: Login and Signup Links -->
+    <div class="d-flex flex-row align-items-center p-2">
+        <a href="{% url 'registration:login' %}" class="btn btn-dark me-2 text-decoration-none py-1">Sign in</a>
+        <a href="{% url 'registration:register' %}" class="btn btn-outline-dark text-decoration-none py-1">Join now</a>
+    </div>
+</div>

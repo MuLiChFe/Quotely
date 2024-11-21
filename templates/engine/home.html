@@ -1,0 +1,30 @@
+{% extends 'template/user_base.html' %}
+{% load static %}
+
+{% block main-body %}
+    <!-- 主内容区 -->
+    <div id="main-content" class="col px-0">
+        <div class="container-fluid my-5 px-0">
+            <div class="row w-100">
+                <div class="col text-center justify-content-center">
+                    <h1 class="display-4 mb-4">Quotely</h1>
+                </div>
+                <div class="container mt-5 px-5">
+                    <!-- 分割线与Year 12标题 -->
+                    {% for year, films in film_dict.items %}
+                        <h4>Year {{ year }}</h4>
+                        <hr class="my-2">
+                        <div>
+                            {% for film in films %}
+                                <a class="btn btn-link btn-lg" href="film/{{ film.film_name }}">◽ {{ film.display_name }} <small>- By {{ film.author }}</small></a><br>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/public/left_bar.js' %}"></script>
+    <script src="{% static 'js/public/user_card.js' %}"></script>
+    <script src="{% static 'js/tooltip.js' %}"></script>
+{% endblock main-body %}
