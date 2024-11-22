@@ -92,7 +92,6 @@ def user_info(request):
     return True, user
 
 def index(request):
-    Film.objects.all().delete()
     flag, user = user_info(request)
     if not flag:
         return redirect('engine:index')
@@ -145,5 +144,4 @@ def library(request,):
         return redirect('engine:index')
     films = Film.objects.all().values("id", 'film_name', 'display_name', 'year_levels', 'author', 'vimeo_id', 'image_link', 'type')
     context = {'user': user, 'films': json.dumps(list(films))}
-    print(user.id)
     return render(request, 'engine/library/library.html',context)

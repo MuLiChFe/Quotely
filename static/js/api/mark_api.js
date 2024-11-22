@@ -10,11 +10,11 @@ export function getUserMarkers(category, userId) {
         method: "POST",  // 改为 POST 请求
         headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken.value,  // 使用正确的 CSRF token
+            "X-CSRFToken": csrfToken.value,
         },
         body: JSON.stringify({
             "category" : category,
-            "user_id": userId,  // 将 user_id 放在 body 中
+            "user_id": String(userId),
         }),
     })
     .then(response => response.json())
@@ -26,7 +26,8 @@ export function getUserMarkers(category, userId) {
 }
 
 // 关注新电影
-export function addMarker(category, userId, filmId) {
+export function addMarker(category, userId, target_id) {
+    console.log(category,userId, target_id);
     return fetch(`${baseUrl}/api/add_marker/`, {
         method: "POST",
         headers: {
@@ -35,8 +36,8 @@ export function addMarker(category, userId, filmId) {
         },
         body: JSON.stringify({
             "category" : category,
-            "user_id": userId,
-            "film_id": filmId,
+            "user_id": String(userId),
+            "target_id": target_id,
         }),
     })
     .then(response => response.json())
@@ -47,7 +48,7 @@ export function addMarker(category, userId, filmId) {
 }
 
 // 取消关注电影
-export function removeMarker(category, userId, filmId) {
+export function removeMarker(category, userId, target_id) {
     return fetch(`${baseUrl}/api/remove_marker/`, {
         method: 'DELETE',
         headers: {
@@ -56,8 +57,8 @@ export function removeMarker(category, userId, filmId) {
         },
         body: JSON.stringify({
             "category" : category,
-            "user_id": userId,
-            "film_id": filmId,
+            "user_id": String(userId),
+            "target_id": target_id,
         }),
     })
     .then(response => response.json())
@@ -68,7 +69,7 @@ export function removeMarker(category, userId, filmId) {
 }
 
 // 检查电影是否已添加
-export function checkMarker(category, userId, filmId) {
+export function checkMarker(category, userId, target_id) {
     return fetch(`${baseUrl}/api/check_marker/`, {
         method: "POST",
         headers: {
@@ -77,8 +78,47 @@ export function checkMarker(category, userId, filmId) {
         },
         body: JSON.stringify({
             "category" : category,
-            "user_id": userId,
-            "film_id": filmId,
+            "user_id": String(userId),
+            "target_id": target_id,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        return data;
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+export function getMarker(category, userId, target_id) {
+    return fetch(`${baseUrl}/api/get_marker/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken.value,  // 使用正确的 token
+        },
+        body: JSON.stringify({
+            "category" : category,
+            "user_id": String(userId),
+            "target_id": target_id,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        return data;
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+export function getAllMarker(category, userId) {
+    return fetch(`${baseUrl}/api/get_all_markers/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken.value,  // 使用正确的 token
+        },
+        body: JSON.stringify({
+            "category" : category,
+            "user_id": String(userId),
         }),
     })
     .then(response => response.json())

@@ -1,5 +1,4 @@
 from django.db import models
-from registration.models import User
 
 # Create your models here.
 class Quote(models.Model):
@@ -30,8 +29,18 @@ class FilmMarker(models.Model):
     film = models.ForeignKey(Film, on_delete=models.CASCADE, related_name="markers")
     user_id = models.CharField(max_length=255,default='1')  # 用户ID
 
-    # class Meta:
-    #     unique_together = ('film', 'user_id')  # 保证每个用户只能关注一次同一部电影
+    class Meta:
+        unique_together = ('film', 'user_id')  # 保证每个用户只能关注一次同一部电影
 
     def __str__(self):
         return f"{self.user_id} - {self.film.display_name}"
+
+class QuoteMarker(models.Model):
+    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="markers")
+    user_id = models.CharField(max_length=255,default='1')
+
+    class Meta:
+        unique_together = ('quote', 'user_id')
+
+    def __str__(self):
+        return f"{self.user_id} - {self.quote.text}"

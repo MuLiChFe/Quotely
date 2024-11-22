@@ -2,103 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>a<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Test Page</title>
+    <title>Quote Modal with API</title>
     <!-- 引入 Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/public/quote/quote_card.css' %}">
 </head>
 <body>
+    {% csrf_token %}
     <div class="container mt-5">
-        <h1>API Test Page</h1>
-        <p>这是用于开发和调试的测试页面。</p>
-        <!-- 引入前端组件 -->
+        <h1>Quote Display</h1>
         <div id="quote-container">
             <!-- mini_info_card -->
-            <div id="mini-info-card" class="info-card">
-                <p id="mini-info-text">加载中...</p>
-                <button id="view-more" class="btn btn-primary">View More</button>
-            </div>
+<div class="info-card mini" data-quote-id="1">
+    <p id="mini-info-text-1" class="quote-text">Loading...</p>
+    <a href="javascript:void(0);" id="favorite-btn-1" class="favorite-btn">Favorite</a>
+    <button class="btn btn-primary">View More</button>
+</div>
 
-            <!-- standard_info_card -->
-            <div id="standard-info-card" class="info-card d-none">
-                <h4 id="standard-title"></h4>
-                <p id="standard-text"></p>
-                <button id="view-detail" class="btn btn-secondary">View Details</button>
-            </div>
+<div class="info-card standard" data-quote-id="2">
+    <h4 id="standard-title-2" class="quote-author">Loading...</h4>
+    <p id="standard-text-2" class="quote-text">Loading...</p>
+    <a href="javascript:void(0);" id="favorite-btn-2" class="favorite-btn">Favorite</a>
+    <button class="btn btn-secondary">View Details</button>
+</div>
+    
+        </div>
 
-            <!-- off_canvas_info_card -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="off-canvas-info-card">
-                <div class="offcanvas-header">
-                    <h5 id="offcanvas-title"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <p id="offcanvas-text"></p>
+        <!-- Modal -->
+        <div class="modal fade" id="quoteModal" tabindex="-1" aria-labelledby="quoteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 60vw;">
+                <div class="modal-content">
+                    <div class="modal-header text-bottom p-2 px-4">
+                        <h5 class="modal-title" id="quoteModalLabel"></h5>
+                        <p class="p-0 m-0" style="color: gray"><span id="modalQuoteAuthor" class="small"></span></p>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body pt-2" id="modalBody">
+                        <p id="modalQuoteText"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="addToLibraryBtn">Add to Library</button>
+                        <button type="button" class="btn btn-danger" id="removeFromLibraryBtn">Remove from Library</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        async function fetchQuoteInfo(quoteId) {
-            try {
-                const response = await fetch(`/api/quote/${quoteId}/`);
-                if (!response.ok) throw new Error("Failed to fetch quote info");
-                return await response.json();
-            } catch (error) {
-                console.error(error);
-                return null;
-            }
-        }
-
-        async function initQuoteComponent(quoteId) {
-            const data = await fetchQuoteInfo(quoteId);
-            if (data) {
-                document.getElementById("mini-info-text").innerText = data.text;
-                document.getElementById("standard-title").innerText = `Quote by ${data.author}`;
-                document.getElementById("standard-text").innerText = data.text;
-                document.getElementById("offcanvas-title").innerText = `Quote from ${data.movie}`;
-                document.getElementById("offcanvas-text").innerText = data.text;
-
-                // Add event listeners
-                document.getElementById("view-more").addEventListener("click", () => {
-                    document.getElementById("mini-info-card").classList.add("d-none");
-                    document.getElementById("standard-info-card").classList.remove("d-none");
-                });
-
-                document.getElementById("view-detail").addEventListener("click", () => {
-                    const offcanvas = new bootstrap.Offcanvas(document.getElementById("off-canvas-info-card"));
-                    offcanvas.show();
-                });
-            } else {
-                document.getElementById("mini-info-text").innerText = "Quote not found!";
-            }
-        }
-
-        // 初始化组件，开发时可以传入任意测试 ID
-        initQuoteComponent(1);
-    </script>
-
-    <style>
-        .info-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 5px;
-        }
-        .d-none {
-            display: none;
-        }
-    </style>
+    <!-- 引入独立的 JavaScript 文件 -->
+    <script type="module" src="{% static 'js/public/quote/quote-display.js' %}"></script>
 </body>
 </html>
