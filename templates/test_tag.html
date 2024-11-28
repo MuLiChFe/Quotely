@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag API Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    {% csrf_token %}
+    <h1>Tag API 测试</h1>
+
+    <!-- 学生操作 -->
+    <div>
+        <h2>学生操作</h2>
+        <button id="studentAddTagBtn">学生添加标签</button>
+        <button id="studentRemoveTagBtn">学生删除标签</button>
+        <button id="viewStudentTagsBtn">查看学生标签</button>
+        <div id="studentTagsDisplay"></div>
+    </div>
+
+    <!-- 老师操作 -->
+    <div>
+        <h2>老师操作</h2>
+        <button id="teacherAddTagBtn">老师添加标签</button>
+        <button id="teacherRemoveTagBtn">老师删除标签</button>
+        <button id="viewTeacherTagsBtn">查看老师标签</button>
+        <div id="teacherTagsDisplay"></div>
+    </div>
+
+    <script>
+        // 假设用户ID为1，引用ID为10
+        const studentUserId = 1;
+        const teacherUserId = 2;
+        const quoteId = 10; // 假设引用ID
+        // 获取当前页面的域名和协议
+        const baseUrl = window.location.origin;
+
+        // 获取 CSRF Token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+
+
+        // 添加标签（学生）
+        $('#studentAddTagBtn').click(function () {
+            const tagName = prompt("请输入标签名（学生）:");
+            if (tagName) {
+                addTag('quote', studentUserId, quoteId, tagName);
+            }
+        });
+
+        // 删除标签（学生）
+        $('#studentRemoveTagBtn').click(function () {
+            const tagName = prompt("请输入要删除的标签名（学生）:");
+            if (tagName) {
+                removeTag('quote', studentUserId, quoteId, tagName);
+            }
+        });
+
+        // 查看学生的所有标签
+        $('#viewStudentTagsBtn').click(function () {
+            getUserTags(studentUserId, 'student');
+        });
+
+        // 添加标签（老师）
+        $('#teacherAddTagBtn').click(function () {
+            const tagName = prompt("请输入标签名（老师）:");
+            if (tagName) {
+                addTag('quote', teacherUserId, quoteId, tagName);
+            }
+        });
+
+        // 删除标签（老师）
+        $('#teacherRemoveTagBtn').click(function () {
+            const tagName = prompt("请输入要删除的标签名（老师）:");
+            if (tagName) {
+                removeTag('quote', teacherUserId, quoteId, tagName);
+            }
+        });
+
+        // 查看老师的所有标签
+        $('#viewTeacherTagsBtn').click(function () {
+            getUserTags(teacherUserId, 'teacher');
+        });
+
+        // 添加标签函数
+        function addTag(category, userId, quoteId, tagName) {
+            fetch(`${baseUrl}/api/add_tag/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken.value,
+                },
+                body: JSON.stringify({
+                    "category": category,
+                    "user_id": String(userId),
+                    "quote_id": String(quoteId),
+                    "tag_name": tagName,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+
+        // 删除标签函数
+        function removeTag(category, userId, quoteId, tagName) {
+            fetch(`${baseUrl}/api/remove_tag/`, {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken.value,
+                },
+                body: JSON.stringify({
+                    "category": category,
+                    "user_id": String(userId),
+                    "quote_id": String(quoteId),
+                    "tag_name": tagName,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        }
+
+        // 查看用户标签函数
+        function getUserTags(userId, role) {
+            console.log(userId, role);
+            fetch(`${baseUrl}/api/get_user_tags/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken.value,
+                },
+                body: JSON.stringify({ "user_id": String(userId) }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const displayElement = role === 'student' ? $('#studentTagsDisplay') : $('#teacherTagsDisplay');
+                displayElement.html('<h3>' + role + '标签:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

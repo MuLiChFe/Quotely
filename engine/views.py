@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import Quote, FilmMarker
+from .models import Quote
 from registration.models import User
 import time
 import re

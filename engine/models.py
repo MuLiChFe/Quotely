@@ -1,3 +1,4 @@
+# engine/models.py
 from django.db import models
 
 # Create your models here.
@@ -7,6 +8,8 @@ class Quote(models.Model):
     start_time = models.CharField(max_length=10)  # 根据你需要的格式调整长度
     end_time = models.CharField(max_length=10, default='1')
     text = models.TextField()  # 使用 TextField 以支持较长的字幕内容
+    tags = models.ManyToManyField('engine.Tag', blank=True, related_name="taged_quotes")
+    followers = models.ManyToManyField('registration.User', blank=True, related_name="followed_quotes")
 
     def __str__(self):
         return f"{self.film_name} - {self.number}"
@@ -24,23 +27,13 @@ class Film(models.Model):
     def __str__(self):
         return f"{self.id} - {self.display_name}"
 
-
-class FilmMarker(models.Model):
-    film = models.ForeignKey(Film, on_delete=models.CASCADE, related_name="markers")
-    user_id = models.CharField(max_length=255,default='1')  # 用户ID
-
-    class Meta:
-        unique_together = ('film', 'user_id')  # 保证每个用户只能关注一次同一部电影
-
-    def __str__(self):
-        return f"{self.user_id} - {self.film.display_name}"
-
-class QuoteMarker(models.Model):
-    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="markers")
-    user_id = models.CharField(max_length=255,default='1')
-
-    class Meta:
-        unique_together = ('quote', 'user_id')
+class Tag(models.Model):
+    name = models.CharField(max_length=50)  # 标签名字
+    created_at = models.DateTimeField(auto_now_add=True)
+    display_name = models.CharField(max_length=255)
+    created_by = models.ForeignKey('registration.User', on_delete=models.CASCADE, related_name="own_tags", default=1)  # 标签归属的用户
+    workspace = models.ForeignKey('registration.Workspace', on_delete=models.SET_NULL, null=True, blank=True, related_name="workspace_tags")
+    related_film = models.ForeignKey('Film', on_delete=models.SET_NULL, null=True, blank=True, related_name="film_tags")
 
     def __str__(self):
-        return f"{self.user_id} - {self.quote.text}"
+        return f"{self.name}"

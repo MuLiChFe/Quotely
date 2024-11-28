@@ -10,9 +10,12 @@ urlpatterns = [
     path('get_marker/',views.get_marker, name='get_marker'),
     path('get_all_markers/',views.get_all_markers, name='get_all_markers'),
 
-    path('quote/<int:quote_id>/',views.QuoteDetailView.as_view(
+    path('get_user_tags/', views.get_user_tags, name='get_user_tags'),
+    path('add_tag/', views.add_tag, name='add_tag'),
+    path('remove_tag/', views.remove_tag, name='remove_tag'),
+    path('search_by_tags/', views.search_by_tags, name='search_by_tags'),
 
-    ), name='get_quote_info'),
 
-    path('test', views.test_api, name='test'),
+    path('test_api', views.test_api, name='test'),
+    path('test_tag', views.test_tag, name='test_tag'),
 ]
