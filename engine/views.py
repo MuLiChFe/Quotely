@@ -96,11 +96,12 @@ def index(request):
     if not flag:
         return redirect('engine:index')
     film_dict = get_film_list()
-    context = {"film_dict": film_dict,'user': user}
+    sidebarExpand = request.session.get('sidebarExpand', True)
+    context = {"film_dict": film_dict,'user': user,'sidebarExpand':sidebarExpand}
     return render(request, 'engine/home.html',context)
 
 
-def search(request, film_name):
+def old_search(request, film_name):
     film_name = film_name
     film_id = get_link(film_name)
 
@@ -143,5 +144,53 @@ def library(request,):
     if not flag or flag == 'no user_id':
         return redirect('engine:index')
     films = Film.objects.all().values("id", 'film_name', 'display_name', 'year_levels', 'author', 'vimeo_id', 'image_link', 'type')
-    context = {'user': user, 'films': json.dumps(list(films))}
+    sidebarExpand = request.session.get('sidebarExpand', False)
+    context = {'user': user,'sidebarExpand':sidebarExpand ,'films': json.dumps(list(films))}
     return render(request, 'engine/library/library.html',context)
+
+
+def search(request,):
+    t = time.time()
+    flag, user = user_info(request)
+    if not flag or flag == 'no user_id':
+        return redirect('engine:index')
+    searching_film = {"display_name":"Haven't follow any film or book yet"}
+    searching_film_id = request.session.get("searching_film_id", '')
+    query = request.GET.get('q', '')
+
+    user_followed_film = user.followed_films.all().values_list('id', 'display_name')
+    print(user_followed_film)
+    if not searching_film_id:
+        if user.followed_films.all():
+            searching_film = list(user.followed_films.all())[0]
+            request.session["searching_film_id"] = searching_film.id
+    else:
+        searching_state = user_followed_film.filter(id=searching_film_id).exists()
+        if not searching_state:
+            request.session.pop('searching_film_id')
+            return redirect('engine:search')
+        searching_film = user.followed_films.get(id=searching_film_id)
+    if query:
+        quote_list = list(Quote.objects.filter(film_name=searching_film.film_name if searching_film else "", text__icontains=query).values('id','film_name', 'text', 'start_time', 'end_time'))
+    else:
+        quote_list = []
+
+    followed_film_list = []
+    for id, display_name in list(user_followed_film):
+        followed_film_list.append({'id': id, 'display_name': display_name})
+    print('followed_film_list',followed_film_list)
+
+    sidebarExpand = request.session.get('sidebarExpand', False)
+    print(searching_film,searching_film_id)
+    context = {'user': user,
+               'sidebarExpand': sidebarExpand,
+               'user_followed_film':followed_film_list,
+               'query': query,
+               'searching_film': searching_film,
+               'quote_list': quote_list,
+               'film_id':searching_film_id,
+               'number_of_results': len(quote_list),
+               'time_taken': f"{float(time.time() - t):.5f}",
+               'error_message': "Too many results, please exact keywords" if len(quote_list) > 40 else "",
+               }
+    return render(request, 'engine/search/search.html', context)

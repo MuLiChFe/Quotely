@@ -1,0 +1,70 @@
+.default-color-selection{
+    border-radius: 6px;
+    align-items: center;
+    padding: 2px;
+}
+
+.default-color-selection:hover{
+    background: #efefef !important;
+    cursor: pointer;
+}
+
+.color-simple{
+    border-radius: 4px;
+    width: 18px;
+    height: 18px;
+    border-width: 1px !important;
+    border-style: solid;
+}
+
+.color-simple-container{
+    margin-left: 5px;
+}
+
+.tag-name-edit-input{
+    margin: 12px;
+    width: 196px;
+    height: 28px;
+    border-radius: 6px;
+    padding: 4px;
+    border: var(--platform-dark-grey) ;
+    border-width: 1px;
+    border-style: solid;
+    outline-width: 1px;
+    background: var(--platform-light-grey);
+}
+
+
+.tag-name-edit-input:focus, textarea:focus, select:focus {
+    background: var(--platform-light-grey);
+    border-color: var(--platform-blue) !important;
+}
+
+.color-selections{
+    padding-left: 4px;
+    padding-bottom: 4px;
+    padding-right: 4px;
+}
+
+.tag-setting-menu-btn{
+    color: var(--platform-title-grey);
+    align-items: center;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    height: 28px;
+    padding-left: 1px;
+    padding-right: 1px;
+    cursor: pointer;
+
+}
+
+.tag-setting-menu-btn:hover {
+    background: var(--platform-grey);
+}
+
+hr{
+    margin-top: 4px;
+    margin-bottom: 4px;
+}

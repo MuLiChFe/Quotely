@@ -1,0 +1,34 @@
+.dropdown-btn {
+    background-color: white;
+    border-radius: 4px;
+    color: var(--platform-title-grey);
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.dropdown-btn:hover{
+    background: var(--platform-light-grey);
+}
+
+.dropdown-menu {
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    display: block;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: var(--platform-grey);
+}

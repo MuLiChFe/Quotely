@@ -20,6 +20,7 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 60vw;">
                             <div class="modal-content">
                                 <div class="modal-header text-bottom p-2 px-4">
+                                    <p id="film_id" style="display: none;"></p>
                                     <h5 class="modal-title" id="bookModalLabel"></h5> &nbsp;|&nbsp;
                                     <p class="p-0 m-0 " style="color: gray"><span id="modalBookAuthor" class="small"></span></p>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -57,13 +58,14 @@
             </div>
         </div>
     </div>
-
+    <h1>
+    </h1>
     <script src="{% static 'js/public/left_bar.js' %}"></script>
     <script src="{% static 'js/public/user_card.js' %}"></script>
     <script src="{% static 'js/tooltip.js' %}"></script>
     <script type="module" src="{% static 'js/public/library/book-display.js' %}"></script>
     <script>
         var films = '{{films|safe}}';
-        var user = '{{user}}';
+        var userId = '{{user.id}}';
     </script>
 {% endblock main-body %}

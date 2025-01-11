@@ -3,143 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag API Test</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Test API Page</title>
+    {% load static %}
+    <script type="module" src="{% static 'js/tag_test_js.js' %}"></script>
 </head>
 <body>
-    {% csrf_token %}
-    <h1>Tag API 测试</h1>
+    <div class="container">
+        {% csrf_token %}
+        <h1>API Test Page</h1>
 
-    <!-- 学生操作 -->
-    <div>
-        <h2>学生操作</h2>
-        <button id="studentAddTagBtn">学生添加标签</button>
-        <button id="studentRemoveTagBtn">学生删除标签</button>
-        <button id="viewStudentTagsBtn">查看学生标签</button>
-        <div id="studentTagsDisplay"></div>
+        <!-- 模拟用户 ID -->
+        <section>
+            <h2>User Simulation</h2>
+            <label for="user-id">User ID:</label>
+            <input type="number" id="user-id" placeholder="Enter User ID" value="1">
+        </section>
+
+        <hr>
+
+        <!-- Test get_user_own_tag -->
+        <h2>Test get_user_own_tag API</h2>
+        <button id="get-user-tags-button">Get User Tags</button>
+        <div id="get-user-tags-response" class="response-box"></div>
+
+        <hr>
+
+        <section>
+            <h2>Test Create Tag API</h2>
+            <label for="create-user-id">User ID:</label>
+            <input type="number" id="create-user-id" placeholder="Enter User ID" value="1"><br>
+
+            <label for="create-tag-name">Tag Name:</label>
+            <input type="text" id="create-tag-name" placeholder="Enter Tag Name"><br>
+
+            <label for="create-display-name">Display Name:</label>
+            <input type="text" id="create-display-name" placeholder="Enter Display Name"><br>
+
+            <label for="create-workspace-id">Workspace ID:</label>
+            <input type="number" id="create-workspace-id" placeholder="Enter Workspace ID"><br>
+
+            <label for="create-related-film-id">Related Film ID:</label>
+            <input type="number" id="create-related-film-id" placeholder="Enter Related Film ID"><br>
+
+            <button id="create-tag-button">Create Tag</button>
+
+            <div id="create-tag-response" class="response-box"></div>
+        </section>
+    <section>
+        <h2>Bind Tag to Quote</h2>
+        <form id="bindTagForm">
+            <label for="tag_id">Tag ID:</label><br>
+            <input type="text" id="tag_id" name="tag_id" required><br><br>
+
+            <label for="user_id">User ID:</label><br>
+            <input type="number" id="user_id" name="user_id" required><br><br>
+
+            <label for="quote_id">Quote ID:</label><br>
+            <input type="number" id="quote_id" name="quote_id" required><br><br>
+
+            <button type="button" id="bind-tag-button">Bind Tag</button>
+        </form>
+        <pre id="bind-tag-response"></pre>
+    </section>
+
+    <section>
+        <h2>Get Tags for Quote</h2>
+        <form id="quoteTagsForm">
+            <label for="user_id_tags">User ID:</label><br>
+            <input type="number" id="user_id_tags" name="user_id" required><br><br>
+
+            <label for="quote_id_tags">Quote ID:</label><br>
+            <input type="number" id="quote_id_tags" name="quote_id" required><br><br>
+
+            <button type="button" id="get-quote-tags-button">Get Tags</button>
+        </form>
+        <pre id="get-quote-tags-response"></pre>
+    </section>
+
     </div>
-
-    <!-- 老师操作 -->
-    <div>
-        <h2>老师操作</h2>
-        <button id="teacherAddTagBtn">老师添加标签</button>
-        <button id="teacherRemoveTagBtn">老师删除标签</button>
-        <button id="viewTeacherTagsBtn">查看老师标签</button>
-        <div id="teacherTagsDisplay"></div>
-    </div>
-
-    <script>
-        // 假设用户ID为1，引用ID为10
-        const studentUserId = 1;
-        const teacherUserId = 2;
-        const quoteId = 10; // 假设引用ID
-        // 获取当前页面的域名和协议
-        const baseUrl = window.location.origin;
-
-        // 获取 CSRF Token
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-
-
-        // 添加标签（学生）
-        $('#studentAddTagBtn').click(function () {
-            const tagName = prompt("请输入标签名（学生）:");
-            if (tagName) {
-                addTag('quote', studentUserId, quoteId, tagName);
-            }
-        });
-
-        // 删除标签（学生）
-        $('#studentRemoveTagBtn').click(function () {
-            const tagName = prompt("请输入要删除的标签名（学生）:");
-            if (tagName) {
-                removeTag('quote', studentUserId, quoteId, tagName);
-            }
-        });
-
-        // 查看学生的所有标签
-        $('#viewStudentTagsBtn').click(function () {
-            getUserTags(studentUserId, 'student');
-        });
-
-        // 添加标签（老师）
-        $('#teacherAddTagBtn').click(function () {
-            const tagName = prompt("请输入标签名（老师）:");
-            if (tagName) {
-                addTag('quote', teacherUserId, quoteId, tagName);
-            }
-        });
-
-        // 删除标签（老师）
-        $('#teacherRemoveTagBtn').click(function () {
-            const tagName = prompt("请输入要删除的标签名（老师）:");
-            if (tagName) {
-                removeTag('quote', teacherUserId, quoteId, tagName);
-            }
-        });
-
-        // 查看老师的所有标签
-        $('#viewTeacherTagsBtn').click(function () {
-            getUserTags(teacherUserId, 'teacher');
-        });
-
-        // 添加标签函数
-        function addTag(category, userId, quoteId, tagName) {
-            fetch(`${baseUrl}/api/add_tag/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken.value,
-                },
-                body: JSON.stringify({
-                    "category": category,
-                    "user_id": String(userId),
-                    "quote_id": String(quoteId),
-                    "tag_name": tagName,
-                }),
-            })
-            .then(response => response.json())
-            .then(data => alert(data.message))
-            .catch(error => console.error('Error:', error));
-        }
-
-        // 删除标签函数
-        function removeTag(category, userId, quoteId, tagName) {
-            fetch(`${baseUrl}/api/remove_tag/`, {
-                method: 'DELETE',
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken.value,
-                },
-                body: JSON.stringify({
-                    "category": category,
-                    "user_id": String(userId),
-                    "quote_id": String(quoteId),
-                    "tag_name": tagName,
-                }),
-            })
-            .then(response => response.json())
-            .then(data => alert(data.message))
-            .catch(error => console.error('Error:', error));
-        }
-
-        // 查看用户标签函数
-        function getUserTags(userId, role) {
-            console.log(userId, role);
-            fetch(`${baseUrl}/api/get_user_tags/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken.value,
-                },
-                body: JSON.stringify({ "user_id": String(userId) }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                const displayElement = role === 'student' ? $('#studentTagsDisplay') : $('#teacherTagsDisplay');
-                displayElement.html('<h3>' + role + '标签:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>');
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
 </body>
 </html>

@@ -1,0 +1,178 @@
+.tags {
+    max-width: 500px;
+    overflow: auto;
+}
+
+.tags:hover {
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.tags-opened {
+    background: var(--platform-grey);
+    border-radius: 5px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    max-width: 500px;
+    overflow-x: auto;
+    /*height: 39px;*/
+    cursor: default;
+}
+
+.hidden {
+    display: none;
+}
+
+.drag-handle {
+    width: 18px;
+    display: block;
+    fill: rgba(55, 53, 47, 0.45);
+    margin-bottom: 2px;
+    flex-shrink: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-right: 5px;
+    cursor: grab!important;
+}
+
+.dragging-selection {
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dragging-selection.hidden{
+    display: none;
+}
+
+.dragging-selection:hover{
+    background: var(--platform-grey);
+}
+
+.dragClass {
+    opacity: 0 !important;
+}
+
+.ghostClass {
+    background: var(--platform-grey) !important;
+}
+
+.tag {
+    padding-left: 2px;
+    padding-right: 2px;
+    margin-right: 6px;
+    width: auto;
+    font-size: 14px;
+    border-radius: 5px;
+    border-width: 1px !important;
+    border-style: solid;
+    color: black !important;
+}
+
+.tag.not-owned {
+    border-color: black !important;
+}
+
+.tag-input{
+    background: var(--platform-grey);
+    border-width: 0;
+    outline: none;
+    width: 120px;
+    margin-right: 10px;
+}
+
+.closeThick{
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    opacity: 0.5;
+}
+
+.popup-content {
+    min-width: 300px;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+}
+
+.setting-frame {
+    display: none; // 默认隐藏
+    right: 1px; // 可根据需要调整位置
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute; // 确保父容器是相对定位
+}
+
+.popup-overlay {
+    cursor: default;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.0);
+    z-index: 999; // 确保遮罩层覆盖所有内容
+}
+
+.popup-overlay.none-event {
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: all;
+    cursor: default!important;
+    z-index: 999; // 确保遮罩层覆盖所有内容
+}
+
+.tag-setting-btn{
+    cursor: pointer;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.tag-setting-popup {
+    position: absolute;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    min-width: 220px;
+    z-index: 999;
+}
+
+.delete-tag{
+    padding-left: 2px;
+    cursor: pointer;
+}
+
+.mini-tagMenu{
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+}
+
+.hint{
+    color: var(--platform-dark-grey);
+    padding-left: 4px;
+    font-size: 14px;
+    cursor: default;
+}
+
+.form-select:focus{
+    border-color: var(--platform-green) !important; /* 设置绿色边框 */
+    box-shadow: 0 0 0 0.25rem rgba(13, 163, 127, 0.25) !important; /* 设置绿色阴影 */
+}
+
+
+.color-tick {
+    position: absolute;
+    right: 0;
+    padding-right: 14px;
+    display: none;
+}
+
+.color-tick.show {
+    display: block;
+}
+
+

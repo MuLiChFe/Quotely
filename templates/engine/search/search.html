@@ -1,0 +1,70 @@
+{% extends 'template/user_base.html' %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/public/library/text_card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/quote/quote_card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/tag/tag_btn.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/color/color_btn.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/film/select_film_btn.css' %}">
+    <!-- HTMX and SortableJS -->
+    <script src="https://unpkg.com/htmx.org@1.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+{% endblock %}
+
+{% block main-body %}
+    <div id="main-content" class="col px-0">
+        {% csrf_token %}
+        <div class="container-fluid my-5 mx-4" style="margin-top:0!important; margin-left:10px!important;margin-right:10px!important;">
+                <div id="dropdown-container" style="height: 30px!important; margin-left: 20px;">
+                </div>
+            <div class="row w-100">
+                <div class="p-0 w-100 text-center align-items-center">
+                    <h1 id="film-title" class="display-4 mb-4">{{ searching_film.display_name }}</h1>
+                    <form action='{{ film_name }}' method="get" class="d-flex justify-content-center">
+                        <div class="search-frame d-flex">
+                            <input type="text" name="q" class="form-control me-2" style="width: 300px; border: none; box-shadow: none; border-bottom-right-radius: 0; border-top-right-radius: 0" placeholder="Enter your search query" value="{{ query }}">
+                            <button type="submit" style="border:none; background:white; margin-left:2px; margin-right: 12px; padding:0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16">
+                                    <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                    {% if query %}
+                        <!-- This div will hold the quote cards -->
+                        <div id="quote-cards-container" class="row mt-4 mb-4"style="margin-left: 20px; margin-right: 20px;">
+                            <!-- Quotes will be injected here by JavaScript -->
+                        </div>
+                        <div class="mt-4 mb-4 hint">
+                            Search Results:
+                            <strong>{{ number_of_results }}</strong>
+                            quote{% if number_of_results > 1 %}s{% endif %}
+                            found</strong>
+                        </div>
+                        <strong>
+                            {% if error_message %}
+                                <p>{{ error_message }}</p>
+                            {% elif not number_of_results %}
+                                <div class="mt-4 text-muted ">Try to focus on the key keywords.</div>
+                            {% endif %}
+                        </strong>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/public/left_bar.js' %}"></script>
+    <script src="{% static 'js/public/user_card.js' %}"></script>
+    <script src="{% static 'js/tooltip.js' %}"></script>
+    <script>
+        var currentFilmName = `{{ searching_film.display_name }}`;
+        var userFollowedFilm = {{ user_followed_film|safe }};
+        var userId = {{ user.id }};
+        var filmId = {{ film_id }};
+        var quoteList = {{ quote_list|safe }};  // Assuming quote_list is a list of dicts or objects with the necessary properties
+    </script>
+    <script type="module" src="{% static 'js/public/film/select-film-btn.js' %}"></script>
+    <script type="module" src="{% static 'js/public/search/search-display.js' %}"></script>
+{% endblock main-body %}

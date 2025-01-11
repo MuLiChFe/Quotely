@@ -1,3 +1,20 @@
+function process(flag){
+    document.querySelectorAll(".explanations").forEach(element => {
+        if (flag) {
+            element.classList.add("show"); // 添加显示类
+        } else {
+            element.classList.remove("show"); // 移除显示类
+        }
+    });
+    document.querySelectorAll(".preview-only").forEach(element => {
+        if (flag) {
+            element.classList.add("hide"); // 移除显示类
+        } else {
+            element.classList.remove("hide"); // 添加显示类
+
+        }
+    });
+}
 function toggleSidebar() {
     const sidebar = document.getElementById("left-bar");
 
@@ -5,23 +22,10 @@ function toggleSidebar() {
     const isExpanded = sidebar.classList.toggle('expanded');
     // console.log(document.querySelectorAll(".explanations"));
 
-
+    sessionStorage.setItem("sidebarExpand",isExpanded);
+    process(isExpanded);
     // 平滑修改所有 explanations 的显隐状态
-    document.querySelectorAll(".explanations").forEach(element => {
-        if (isExpanded) {
-            element.classList.add("show"); // 添加显示类
-        } else {
-            element.classList.remove("show"); // 移除显示类
-        }
-    });
-        document.querySelectorAll(".preview-only").forEach(element => {
-        if (isExpanded) {
-            element.classList.add("hide"); // 移除显示类
-        } else {
-            element.classList.remove("hide"); // 添加显示类
 
-        }
-    });
 }
 
 function PageNavigator(targetUrl) {
@@ -34,3 +38,4 @@ function PageNavigator(targetUrl) {
     // 跳转到目标页面
     window.location.href = targetUrl;
 }
+

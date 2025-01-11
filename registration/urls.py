@@ -1,3 +1,4 @@
+from django.contrib.auth.views import PasswordResetView
 from django.urls import path
 from .views import *
 
@@ -13,4 +14,6 @@ urlpatterns = [
 
     path('clean/', clean, name='clean'),
     path('logout/', Logout, name='logout'),  # 注销
+
+    path('password_reset/<str:userId>/<str:newPassword>', reset_password, name='password_reset'),
 ]

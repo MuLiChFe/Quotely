@@ -1,3 +1,5 @@
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, HttpResponse, redirect
 from django.views import View
 from django.http import JsonResponse
@@ -6,6 +8,7 @@ from django.utils import timezone
 from .models import User, Verify
 from .forms import RegisterForm, LoginForm
 from tools import EmailManage
+from django.contrib.auth import logout
 
 
 # Create your views here.
@@ -137,10 +140,20 @@ def verify_token(request, token):
 
 
 def Logout(request):
+    logout(request)
     request.session.clear()  # 清除session
-    return redirect('engine:index')
+    response = render(request, 'registration/logout.html')
+    response.delete_cookie('sessionid')
+
+    return response
 
 def clean(request):
     User.objects.all().delete()
     Verify.objects.all().delete()
+    return redirect('engine:index')
+
+def reset_password(request,userId,newPassword):
+    user = User.objects.get(id=userId)
+    user.password = make_password(newPassword)
+    user.save()
     return redirect('engine:index')

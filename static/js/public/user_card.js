@@ -17,7 +17,6 @@ function toggleFloatingComponent() {
 function openFloatingComponent() {
     overlay.classList.remove("hidden");
     component.classList.add("show");
-    document.body.style.overflow = "hidden"; // 禁止背景滚动
 
     // 添加 ESC 键关闭监听器
     document.addEventListener("keydown", handleEscapeKey);
@@ -27,7 +26,6 @@ function openFloatingComponent() {
 function closeFloatingComponent() {
     overlay.classList.add("hidden");
     component.classList.remove("show");
-    document.body.style.overflow = ""; // 恢复背景滚动
 
     // 移除 ESC 键关闭监听器
     document.removeEventListener("keydown", handleEscapeKey);

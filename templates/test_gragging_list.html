@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie App with Handles</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+        rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    >
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/test_gragging_list.css' %}" />
+
+    <!-- HTMX and SortableJS -->
+    <script src="https://unpkg.com/htmx.org@1.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous">
+    </script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous">
+    </script>
+    <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous">
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Movie App with Handles</h1>
+
+        {% block content %}
+        <div id="movie-list" class="sortable">
+            <div class="list-group">
+                <div class="list-group-item d-flex align-items-center" data-id="1">
+                    <span class="handle mr-3">☰</span> The Shawshank Redemption
+                </div>
+                <div class="list-group-item d-flex align-items-center" data-id="2">
+                    <span class="handle mr-3">☰</span> The Godfather
+                </div>
+                <div class="list-group-item d-flex align-items-center" data-id="3">
+                    <span class="handle mr-3">☰</span> The Dark Knight
+                </div>
+                <div class="list-group-item d-flex align-items-center" data-id="4">
+                    <span class="handle mr-3">☰</span> 12 Angry Men
+                </div>
+                <div class="list-group-item d-flex align-items-center" data-id="5">
+                    <span class="handle mr-3">☰</span> Schindler's List
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+
+    <!-- JavaScript to enable sortable lists with handles -->
+    <script src="{% static 'js/test_gragging_list.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var sortable = new Sortable(document.querySelector('.sortable .list-group'), {
+                animation: 150,
+                ghostClass: 'blue-background-class',
+                handle: '.handle', // Only the handle allows dragging
+                onEnd: function (evt) {
+                    console.log(`Moved item ${evt.item.dataset.id} to position ${evt.newIndex + 1}`);
+                }
+            });
+
+            // HTMX CSRF token setup
+            document.body.addEventListener('htmx:configRequest', function(event) {
+                event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+            });
+
+            // Reinitialize sortable when HTMX loads new content
+            htmx.onLoad(function(content) {
+                var newSortables = content.querySelectorAll(".sortable .list-group");
+                for (var i = 0; i < newSortables.length; i++) {
+                    new Sortable(newSortables[i], {
+                        animation: 150,
+                        handle: '.handle'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -9,6 +9,7 @@
 #left-bar {
     width: 50px; /* 默认宽度 */
     background-color: #fafafa; /* 侧边栏背景颜色 */
+    border: none;
     position: fixed; /* 固定在左侧 */
     top: 0;
     left: 0;
@@ -128,7 +129,7 @@
 
 .toggle-sidebar{
     position: absolute;
-    left: calc(100% + 2px);
+    left: calc(100%);
     bottom: 0;
     width: 1px;
     display: flex;

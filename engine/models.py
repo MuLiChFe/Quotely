@@ -14,7 +14,6 @@ class Quote(models.Model):
     def __str__(self):
         return f"{self.film_name} - {self.number}"
 
-
 class Film(models.Model):
     film_name = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255)
@@ -23,17 +22,44 @@ class Film(models.Model):
     vimeo_id = models.CharField(max_length=30)
     image_link = models.URLField(default='')
     type = models.CharField(max_length=255, default='Noval')
+    followers = models.ManyToManyField('registration.User', blank=True, related_name="followed_films")
 
     def __str__(self):
         return f"{self.id} - {self.display_name}"
 
 class Tag(models.Model):
-    name = models.CharField(max_length=50)  # 标签名字
-    created_at = models.DateTimeField(auto_now_add=True)
     display_name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey('registration.User', on_delete=models.CASCADE, related_name="own_tags", default=1)  # 标签归属的用户
     workspace = models.ForeignKey('registration.Workspace', on_delete=models.SET_NULL, null=True, blank=True, related_name="workspace_tags")
     related_film = models.ForeignKey('Film', on_delete=models.SET_NULL, null=True, blank=True, related_name="film_tags")
+    color = models.ForeignKey('engine.Color', on_delete=models.SET_NULL, null=True, blank=True, related_name="color_tags")
+    def __str__(self):
+        return f"{self.id}: {self.display_name}"
+
+class Color(models.Model):
+    name = models.CharField(max_length=255)
+    color_code = models.CharField(max_length=255)
+    created_by = models.ForeignKey('registration.User', null=True,blank=True, on_delete=models.CASCADE, related_name="own_colors", default=1)
+    def __str__(self):
+        return f"{self.name} - {self.created_by.username if self.created_by else 'DEFAULT'}"
+
+class UserTagOrder(models.Model):
+    user = models.ForeignKey('registration.User', on_delete=models.CASCADE, related_name='tag_orders')
+    tag = models.ForeignKey('engine.Tag', on_delete=models.CASCADE, related_name='user_orders')
+    order = models.PositiveIntegerField(default=0, help_text="用户自定义的排序位置")
+    create_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'tag')  # 确保同一个用户对同一个标签只有一个排序
+        ordering = ['order']  # 默认按照排序字段排序
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.user.username} - {self.tag.display_name} - Order: {self.order}"
+
+class TagQuoteManager(models.Model):
+    tag = models.ForeignKey('engine.Tag', on_delete=models.CASCADE, related_name='tag_quotes')
+    quote = models.ForeignKey('engine.Quote', on_delete=models.CASCADE, related_name='tag_quotes')
+    create_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.tag.display_name} - {self.quote.number},{self.create_at.strftime('%m/%d/%Y')}"

@@ -18,7 +18,7 @@
 #main-content {
     display: flex;
     flex-wrap: wrap; /* 允许子元素换行 */
-    gap: 10px; /* 设置卡片之间的间距 */
+    gap: 0px; /* 设置卡片之间的间距 */
 }
 
 .card {

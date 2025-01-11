@@ -3,6 +3,14 @@
     --platform-green-hover: #0b9272;
     --platform-error: #d00e17;
     --platform-error-hover: #b8210c;
+    --platform-light-red: #feefee;
+    --platform-red: #ed5e5e;
+    --platform-blue:#2383e2;
+    --platform-blue-hover:#1a66c1;
+    --platform-light-grey: #f7f7f5;
+    --platform-grey: #efefef;
+    --platform-dark-grey: #9c9b98;
+    --platform-title-grey: #53514d;
 }
 
 
@@ -19,12 +27,46 @@
     box-shadow: 0 0 0 0.25rem rgba(13, 163, 127, 0.25) !important; /* 设置绿色阴影 */
 }
 
+.btn-blue {
+    --bs-btn-bg: var(--platform-blue) !important;
+    --bs-btn-hover-bg: var(--platform-blue-hover) !important;
+    --bs-btn-active-bg: var(--platform-blue-hover) !important;
+    color: white!important;
+    border: None !important;
+}
+
+.btn-blue:focus, textarea:focus, select:focus {
+    --border-color: var(--platform-blue-hover) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--platform-blue-hover), 0.25) !important; /* 设置绿色阴影 */
+}
+
 .btn-warning {
     --bs-btn-bg: var(--platform-error) !important;
     --bs-btn-hover-bg: var(--platform-error-hover) !important;
     --bs-btn-active-bg: var(--platform-error-hover) !important;
     border: None !important;
 }
+
+.btn-light-red {
+    --bs-btn-bg: white !important;
+    --bs-btn-hover-bg: var(--platform-light-red) !important;
+    color: var(--platform-red) !important;
+    border: 1px solid var(--platform-red) !important;
+}
+
+.btn-light-grey {
+    --bs-btn-bg: white !important;
+    --bs-btn-hover-bg: var(--platform-grey) !important;
+    color: black !important;
+    border: 1px solid var(--platform-dark-grey) !important;
+}
+
+.btn.grey-background {
+    --bs-btn-hover-bg: #efefef;
+    border: none;
+    margin: 0;
+}
+
 
 .input-primary:focus, textarea:focus, select:focus {
     border-color: var(--platform-green) !important; /* 设置绿色边框 */
@@ -33,7 +75,21 @@
 
 .input-warning:focus, textarea:focus, select:focus {
     border-color: var(--platform-error) !important; /* 设置绿色边框 */
-    box-shadow: 0 0 0 0.25rem rgb(168, 57, 57, 0.25) !important; /* 设置绿色阴影 */
+    box-shadow: 0 0 0 0.25rem rgba(168, 57, 57, 0.25) !important; /* 设置绿色阴影 */
+}
+
+.search-frame{
+    border: 1px solid;
+    border-radius: 8px;
+    /*border-top-right-radius: 8px;*/
+    border-color: var(--platform-dark-grey) !important; /* 设置绿色边框 */
+    font-size: 19px;
+}
+
+.search-frame:focus-within {
+    background: white!important;
+    border-color: var(--platform-dark-grey) !important; /* 设置绿色边框 */
+    box-shadow: 0 0 0 0.25rem rgba(155,155,155,0.25) !important; /* 设置绿色阴影 */
 }
 
 .background-outline-btn {
@@ -117,8 +173,6 @@ a.text-primary {
     color: var(--platform-green) !important;
 }
 
-
-
 .text-warning {
     color: var(--platform-error) !important;
 }
@@ -132,3 +186,20 @@ a.text-primary {
     color: lightgray !important;
 }
 
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 0px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--platform-dark-grey);
+  border-radius: 10px;
+}

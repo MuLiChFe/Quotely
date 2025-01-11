@@ -1,80 +1,98 @@
-// 获取当前页面的域名和协议
-const baseUrl = window.location.origin;
+import {fetchApi, } from "/static/js/api/tools.js";
 
-// 获取 CSRF Token
-const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-
-
-// 获取用户所有标签
-export function getUserTags(userId) {
-    return fetch(`${baseUrl}/api/get_user_tags/`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken.value,
-        },
-        body: JSON.stringify({
+export function getUserOwnTags(userId,quoteId,sortType) {
+    return fetchApi(
+        'api/get_user_own_tags/',
+        "POST",
+        {
             "user_id": String(userId),
-        }),
-    })
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => console.error('Error:', error));
+            "quote_id": String(quoteId ? quoteId:''),
+            "sort_type": sortType ? sortType:'',
+        }
+    )
 }
 
-// 添加标签
-export function addTag(category, userId, quoteId, tagName) {
-    return fetch(`${baseUrl}/api/add_tag/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken.value,
-        },
-        body: JSON.stringify({
-            "category": category,
+export function CreatTag(userId, display_name, workspace_id, related_film_id,color_id) {
+    return fetchApi(
+        'api/create_tag/',
+        "POST",
+        {
             "user_id": String(userId),
-            "quote_id": String(quoteId),
-            "tag_name": tagName,
-        }),
-    })
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => console.error('Error:', error));
+            "display_name":display_name,
+            "workspace_id": workspace_id ? workspace_id : "",
+            "related_film_id": related_film_id,
+            "color_id":color_id,
+        }
+    )
 }
 
-// 删除标签
-export function removeTag(category, userId, quoteId, tagName) {
-    return fetch(`${baseUrl}/api/remove_tag/`, {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken.value,
-        },
-        body: JSON.stringify({
-            "category": category,
+export function QuoteTags(userId, quoteId,sortType) {
+    return fetchApi(
+        'api/quote_tags/',
+        "POST",
+        {
             "user_id": String(userId),
-            "quote_id": String(quoteId),
-            "tag_name": tagName,
-        }),
-    })
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => console.error('Error:', error));
+            "quote_id":String(quoteId),
+            "sort_type":sortType ?sortType:"",
+        }
+    )
 }
 
-// 通过标签搜索quote
-export function searchByTags(tags) {
-    return fetch(`${baseUrl}/api/search_by_tags/`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken.value,
-        },
-        body: JSON.stringify({
-            "tags": tags,
-        }),
-    })
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => console.error('Error:', error));
+export function RenameTag(userId, tagId, newName){
+    return fetchApi(
+        'api/rename_tag/',
+        "POST",
+        {
+            "user_id":userId,
+            "tag_id":tagId,
+            "new_name":newName,
+        }
+    )
+
+}
+
+export function BindTag(userId, tagId, quoteId) {
+    return fetchApi(
+        'api/bind_tag/',
+        "POST",
+        {
+            "user_id": String(userId),
+            "tag_id": String(tagId),
+            "quote_id":String(quoteId),
+        }
+    )
+}
+
+export function unBindTag(userId, tagId, quoteId){
+    return fetchApi(
+        'api/unbind_tag/',
+        "POST",
+        {
+            "user_id": String(userId),
+            "tag_id": String(tagId),
+            "quote_id":String(quoteId),
+        }
+    )
+}
+export function UpdateUerTagOrder(userId, workspaceId, ordered_tags) {
+    return fetchApi(
+        'api/update_user_tag_order/', // 假设 API 路径是这个，可以根据实际后端路径修改
+        "POST",
+        {
+            "user_id": String(userId),
+            "workspace_id": String(workspaceId),
+            "ordered_tags": ordered_tags, // 假设 ordered_tags 是一个数组
+        }
+    );
+}
+
+export function DeleteTag(userId,tagId){
+    return fetchApi(
+        'api/delete_tag/',
+        "POST",
+        {
+            "user_id": String(userId),
+            "tag_id": String(tagId),
+        }
+    )
 }

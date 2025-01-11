@@ -7,7 +7,7 @@
     background: #fff; /* 背景色，可根据需要调整 */
     border: #d8d8d8 1px solid; /* 边框样式 */
     border-radius: 18px; /* 圆角 */
-    z-index: 9999000009; /* 确保在其他元素之上 */
+    z-index: 99999; /* 确保在其他元素之上 */
     overflow: auto; /* 如果内容超出容器则允许滚动 */
     display: block;
     transition: opacity 0.1s ease;
