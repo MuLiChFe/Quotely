@@ -27,8 +27,67 @@ def if_allow_access_workspace_user(workspace_id, user_id):
         return False
     return True
 
+def get_film_vimeo_id(request):
+    if request.method == 'POST':
+        try:
+            # 解析请求数据
+            data = json.loads(request.body)
+            film_id = data.get('film_id')
+            vimeo_id = Film.objects.get(id=film_id).vimeo_id
+            return JsonResponse({'success': True,
+                                 'vimeo_id': vimeo_id,})
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'message': f'An error occurred: {str(e)}'}, status=500)
+
+    return JsonResponse({'message': 'Invalid method'}, status=405)
+
+def get_dialogs(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            quote_id = data.get('quote_id')
+            number_of_quotes = data.get('number_of_quotes')
+            forward = bool(data.get('forward'))
+
+            print(quote_id, number_of_quotes, forward)
+
+            belonging_film = Quote.objects.get(id=quote_id).film_name
+            quotes_list = []
+
+            for index in range(1,int(number_of_quotes)+1):
+                if forward:
+                    new_quote_id = int(quote_id) + index
+                else:
+                    new_quote_id = int(quote_id) - index
+                current_quote = Quote.objects.filter(id=str(new_quote_id))
+                if not(current_quote.exists()):
+                    break
+                current_quote = current_quote[0]
+                if current_quote.film_name != belonging_film:
+                    break
+                quotes_list.append({
+                    'id': current_quote.id,
+                    'start_time': current_quote.start_time,
+                    'end_time': current_quote.end_time,
+                    'text': current_quote.text,
+                })
+            if not forward:
+                quotes_list.reverse()
+            return JsonResponse({'success': True,'dialogs': quotes_list})
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'message': f'An error occurred: {str(e)}'}, status=500)
+    return JsonResponse({'message': 'Invalid method'}, status=405)
+
+
 def get_stander_quote_card(request):
     return render(request, 'public/quote/stander_quote_card.html')
+def get_popup_quote_card(request):
+    return render(request, 'public/quote/popup_quote_card.html')
+
 
 def user_marks(request):
     if request.method == 'POST':
@@ -727,3 +786,6 @@ def test_tag(request):
     return render(request, 'test_tag.html')
 def test_gragging(request):
     return render(request,'test_gragging_list.html')
+
+def test_video(request):
+    return render(request,'test_video.html')

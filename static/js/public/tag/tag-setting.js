@@ -1,6 +1,7 @@
 import {getColors, changeColor} from "../../api/color_api.js";
 import {RenameTag, DeleteTag} from "../../api/tag_api.js"
-import {hexToRgbA} from "../../tools/color-convert.js"
+import {hexToRgbA} from "../../tools/convert.js"
+import { enableScroll, disableScroll } from "../../tools/browser.js";
 
 let currentColorId = 0
 let tagName = '';
@@ -71,10 +72,11 @@ function tagNameEditing(userId,tagId,frame,tagName){
 }
 
 function showCustomConfirm(message, onConfirm) {
+    disableScroll()
     const overlay = document.createElement('div');
     overlay.classList.add('popup-overlay','none-event')
     const confirmBox = document.createElement('div');
-    confirmBox.style.position = 'absolute';
+    confirmBox.style.position = 'fixed';
     confirmBox.style.top = '50%';
     confirmBox.style.left = '50%';
     confirmBox.style.transform = 'translate(-50%, -50%)';
@@ -95,11 +97,13 @@ function showCustomConfirm(message, onConfirm) {
     document.body.appendChild(confirmBox);
 
     document.getElementById('confirm-yes').addEventListener('click', () => {
+        enableScroll()
         onConfirm();
         overlay.remove()
         confirmBox.remove();
     });
     document.getElementById('confirm-no').addEventListener('click', () => {
+        enableScroll()
         overlay.remove()
         confirmBox.remove();
     });

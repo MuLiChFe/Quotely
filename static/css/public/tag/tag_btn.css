@@ -1,6 +1,10 @@
 .tags {
-    max-width: 500px;
+    max-width: 700px;
     overflow: auto;
+    width: fit-content;
+    margin-left: 8px;
+    margin-bottom: 4px;
+    height: 40px;
 }
 
 .tags:hover {
@@ -13,10 +17,11 @@
     border-radius: 5px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    max-width: 500px;
+    max-width: 700px;
     overflow-x: auto;
     /*height: 39px;*/
     cursor: default;
+    padding: 8px
 }
 
 .hidden {
@@ -87,9 +92,12 @@
     opacity: 0.5;
 }
 
+.popup-window {
+    z-index: 999;
+}
 .popup-content {
     min-width: 300px;
-    z-index: 1000;
+    z-index: 1001;
     background: white;
     border: 1px solid #ccc;
     border-radius: 5px;

@@ -1,12 +1,11 @@
-import { loadQuotes, getUserFavoriteQuotes } from "/static/js/public/quote/quote-display.js";
+import { loadQuotes } from "/static/js/public/quote/quote-display.js";
 
 
 export async function initSearch(){
     // 加载并展示 quote 数据
     if (quoteList.length < 40) {
             // 获取用户的所有收藏记录
-        const favoriteQuotes = await getUserFavoriteQuotes(userId);
-        await loadQuotes(userId,'quote-cards-container', favoriteQuotes, quoteList,'stander_quote_card');
+        await loadQuotes(userId,'quote-cards-container', quoteList,'stander_quote_card');
     }
 }
 // 页面加载时初始化

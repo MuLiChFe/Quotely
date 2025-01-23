@@ -33,3 +33,42 @@
 .tag-setting {
     cursor: pointer;
 }
+
+
+.film-video{
+    height: 500px;
+    width: 900px;
+    margin-left: 4px;
+}
+
+.dialog-container{
+    width: 332px;
+    margin-left: 8px;
+    /*background: var(--platform-light-grey);*/
+    border-radius: 8px;
+    height: 570px;
+    text-align: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: solid 2px var(--platform-dark-grey);
+}
+
+.dialog{
+    font-size: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    line-height: 1.1;
+}
+
+.dialog:hover{
+    cursor: pointer;
+    background: var(--platform-light-grey);
+}
+
+.dialog.select{
+    font-weight: bold;  /* 使用 'bold' 关键字 */
+    background: var(--platform-grey);
+}

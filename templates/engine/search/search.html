@@ -20,35 +20,85 @@
                 </div>
             <div class="row w-100">
                 <div class="p-0 w-100 text-center align-items-center">
-                    <h1 id="film-title" class="display-4 mb-4">{{ searching_film.display_name }}</h1>
-                    <form action='{{ film_name }}' method="get" class="d-flex justify-content-center">
-                        <div class="search-frame d-flex">
-                            <input type="text" name="q" class="form-control me-2" style="width: 300px; border: none; box-shadow: none; border-bottom-right-radius: 0; border-top-right-radius: 0" placeholder="Enter your search query" value="{{ query }}">
-                            <button type="submit" style="border:none; background:white; margin-left:2px; margin-right: 12px; padding:0">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16">
-                                    <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path>
-                                </svg>
-                            </button>
+                    {% if film_id %}
+                        <h1 id="film-title" class="display-4 mb-4">{{ searching_film.display_name }}</h1>
+                        <form action='{{ film_name }}' method="get" class="d-flex justify-content-center">
+                            <div class="search-frame d-flex">
+                                <input type="text" name="q" class="form-control me-2" style="width: 300px; border: none; box-shadow: none; border-bottom-right-radius: 0; border-top-right-radius: 0" placeholder="Enter your search query" value="{{ query }}">
+                                <button type="submit" style="border:none; background:white; margin-left:2px; margin-right: 12px; padding:0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16">
+                                        <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                        {% if query %}
+                            <!-- This div will hold the quote cards -->
+                            <div id="quote-cards-container" class="row mt-4 mb-4"style="margin-left: 20px; margin-right: 20px;">
+                                <!-- Quotes will be injected here by JavaScript -->
+                            </div>
+                            <div class="mt-4 mb-4 hint">
+                                Search Results:
+                                <strong>{{ number_of_results }}</strong>
+                                quote{% if number_of_results > 1 %}s{% endif %}
+                                found</strong>
+                            </div>
+                            <strong>
+                                {% if error_message %}
+                                    <p>{{ error_message }}</p>
+                                {% elif not number_of_results %}
+                                    <div class="mt-4 text-muted ">Try to focus on the key keywords.</div>
+                                {% endif %}
+                            </strong>
+                        {% endif %}
+                    {% else %}
+                        <svg version="1.0" style="color:var(--platform-dark-grey); width: 400px; height: 300px" xmlns="http://www.w3.org/2000/svg"
+                             width="512.000000pt" height="512.000000pt" viewBox="0 0 512.000000 512.000000"
+                             preserveAspectRatio="xMidYMid meet">
+                            <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+                            fill="CurrentColor" stroke="none">
+                                <path d="M1140 4189 c-52 -21 -60 -44 -60 -175 l0 -121 -69 -6 c-125 -10 -209
+                                -65 -261 -170 l-30 -62 2 -1105 3 -1105 23 -42 c57 -107 142 -163 259 -171
+                                l73 -5 0 -122 c0 -118 1 -123 26 -148 14 -15 40 -29 58 -32 17 -3 244 -5 504
+                                -3 l474 3 29 33 c29 32 29 34 29 151 l0 118 68 5 c37 3 88 14 114 26 53 23
+                                118 86 142 137 l17 35 900 2 901 3 29 33 29 32 0 1063 0 1063 -31 30 -30 29
+                                -335 3 c-324 3 -336 2 -369 -18 -63 -39 -62 -47 20 -385 l75 -304 -100 -202
+                                -100 -201 -1 -146 0 -147 -71 140 -70 139 96 241 c53 132 96 252 96 268 0 37
+                                -207 553 -236 586 l-22 26 -391 3 -391 3 -16 30 c-48 94 -144 157 -255 166
+                                l-69 6 0 118 c0 117 0 119 -29 151 l-29 33 -489 2 c-307 1 -497 -2 -513 -8z
+                                m860 -249 l0 -50 -360 0 -360 0 0 50 0 50 360 0 360 0 0 -50z m300 -268 c24
+                                -11 39 -28 47 -52 17 -50 17 -2070 0 -2120 -8 -24 -23 -41 -47 -53 -32 -16
+                                -81 -17 -677 -15 l-643 3 -27 28 -28 27 0 1069 c0 1055 0 1069 20 1091 11 12
+                                29 26 40 31 11 4 304 8 650 8 581 1 633 0 665 -17z m989 -395 l82 -203 -97
+                                -245 c-54 -135 -97 -258 -97 -276 1 -20 67 -162 189 -404 153 -303 194 -375
+                                219 -390 37 -23 57 -24 96 -3 56 29 59 48 59 434 l0 350 100 200 c55 110 100
+                                211 100 225 0 14 -27 133 -60 265 -33 132 -60 242 -60 245 0 3 86 5 190 5
+                                l190 0 0 -920 0 -920 -820 0 -820 0 0 920 0 920 324 0 324 0 81 -203z m-1289
+                                -2097 l0 -50 -360 0 -360 0 0 50 0 50 360 0 360 0 0 -50z"/>
+                                <path d="M2677 3362 c-22 -24 -24 -139 -3 -168 12 -16 27 -19 91 -19 94 0 105
+                                10 105 100 0 91 -14 105 -104 105 -58 0 -76 -4 -89 -18z"/>
+                                <path d="M3037 3362 c-12 -13 -17 -37 -17 -85 0 -87 17 -107 93 -107 74 0 94
+                                8 107 41 18 42 8 138 -15 155 -30 22 -148 18 -168 -4z"/>
+                                <path d="M3907 3362 c-12 -13 -17 -37 -17 -85 0 -87 17 -107 93 -107 99 0 117
+                                18 117 113 0 82 -16 97 -104 97 -58 0 -76 -4 -89 -18z"/>
+                                <path d="M2700 1944 c-29 -12 -40 -38 -40 -99 0 -90 14 -105 101 -105 93 0
+                                109 15 109 103 0 87 -12 100 -91 104 -35 1 -71 0 -79 -3z"/>
+                                <path d="M3050 1937 c-23 -11 -25 -19 -28 -86 -4 -98 7 -111 98 -111 87 0 102
+                                11 108 83 5 67 -10 113 -41 121 -38 10 -111 6 -137 -7z"/>
+                                <path d="M3930 1943 c-30 -11 -40 -37 -40 -103 0 -88 13 -100 103 -100 88 0
+                                107 17 107 95 0 65 -15 101 -44 109 -26 7 -105 6 -126 -1z"/>
+                            </g>
+                        </svg>
+                        <h3>
+                            Oops! It looks like you're not following any movies right now.
+                        </h3>
+                        <div>
+                            Time to
+                            <a href="/library">find your next film!</a>
+                            or try
+                            <a href="/search">refresh</a>
+                        </a>
                         </div>
-                    </form>
-                    {% if query %}
-                        <!-- This div will hold the quote cards -->
-                        <div id="quote-cards-container" class="row mt-4 mb-4"style="margin-left: 20px; margin-right: 20px;">
-                            <!-- Quotes will be injected here by JavaScript -->
-                        </div>
-                        <div class="mt-4 mb-4 hint">
-                            Search Results:
-                            <strong>{{ number_of_results }}</strong>
-                            quote{% if number_of_results > 1 %}s{% endif %}
-                            found</strong>
-                        </div>
-                        <strong>
-                            {% if error_message %}
-                                <p>{{ error_message }}</p>
-                            {% elif not number_of_results %}
-                                <div class="mt-4 text-muted ">Try to focus on the key keywords.</div>
-                            {% endif %}
-                        </strong>
                     {% endif %}
                 </div>
             </div>

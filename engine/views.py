@@ -178,10 +178,8 @@ def search(request,):
     followed_film_list = []
     for id, display_name in list(user_followed_film):
         followed_film_list.append({'id': id, 'display_name': display_name})
-    print('followed_film_list',followed_film_list)
 
     sidebarExpand = request.session.get('sidebarExpand', False)
-    print(searching_film,searching_film_id)
     context = {'user': user,
                'sidebarExpand': sidebarExpand,
                'user_followed_film':followed_film_list,

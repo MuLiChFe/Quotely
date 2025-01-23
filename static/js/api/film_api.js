@@ -11,3 +11,26 @@ export function changeSearchFilm(userId,filmId) {
         }
     )
 }
+
+export function getVimeoId(filmId) {
+    return fetchApi(
+        'api/get_film_vimeo_id/',
+        "POST",
+        {
+            "film_id": String(filmId),
+        }
+    )
+}
+
+export function getDialogs(quoteId,numOfQuotes,forward) {
+    return fetchApi(
+        'api/get_dialogs/',
+        "POST",
+        {
+            "quote_id": String(quoteId),
+            "number_of_quotes": String(numOfQuotes),
+            "forward": forward,
+
+        }
+    )
+}

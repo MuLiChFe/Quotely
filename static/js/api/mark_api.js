@@ -33,7 +33,7 @@ export function removeMarker(category, userId, target_id) {
         {
             "category" : category,
             "user_id": String(userId),
-            "target_id": target_id,
+            "target_id": String(target_id),
         }
     )
 }

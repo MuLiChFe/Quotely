@@ -1,6 +1,7 @@
 import {getUserOwnTags, QuoteTags, UpdateUerTagOrder, BindTag, unBindTag, CreatTag} from "../../api/tag_api.js";
 import {createTagSetting,renameSettingTag} from "./tag-setting.js"
-import {hexToRgbA} from "../../tools/color-convert.js"
+import {hexToRgbA} from "../../tools/convert.js"
+import { enableScroll, disableScroll } from "../../tools/browser.js";
 
 const addTagText = '<div class="me-2 hint" style="color:grey">Add Tag</div>';
 // 2为ColorPopup打开 1为TagListPopup打开 0为默认
@@ -39,16 +40,17 @@ function bindDeleteBtn(deleteButtons,quoteId) {
 }
 
 function popupAskWorkspaceId(quoteId, display_name) {
+    disableScroll()
     TagListPopup += 1;
     askWorkspace = true
     // 创建一个遮罩层
     const overlay = document.createElement('div');
-    overlay.classList.add('popup-overlay','none-event')
+    overlay.classList.add('popup-overlay')
     document.body.appendChild(overlay);
 
     // 创建弹窗容器
     const popup = document.createElement('div');
-    popup.style.position = 'absolute';
+    popup.style.position = 'fixed';
     popup.style.top = '50%';
     popup.style.left = '50%';
     popup.style.transform = 'translate(-50%, -50%)';
@@ -92,14 +94,16 @@ function popupAskWorkspaceId(quoteId, display_name) {
     requestAnimationFrame(() => {
         confirmButton.focus();
     });
+
     // 事件监听器
     confirmButton.addEventListener('click', () => {
         const selectedWorkspaceId = select.value;
         createNewTag(quoteId,display_name,selectedWorkspaceId)
-        closePopup();
+        closePopupQuote();
     });
 
-    function closePopup() {
+    function closePopupQuote() {
+        enableScroll()
         askWorkspace = false;
         document.body.removeChild(popup);
         document.body.removeChild(overlay);
@@ -217,12 +221,14 @@ async function initFramePopup(userId, quoteId, frame) {
     let popupContent = null; // 当前弹窗内容
     let originalFrameContent = null; // 存储 frame 的原始内容
     function documentClickHandler(event) {
+        console.log('documentClickHandler-clicked')
          if (!popupWindow.contains(event.target)){
              closePopup(false);
          }
     }
     // 定义关闭弹窗的逻辑
     const closePopup = (force) => {
+        console.log('closePopup:TagSetting')
         const TagListExist = document.querySelector('.tag-setting-popup')
         if (askWorkspace || TagListExist || TagListPopup === 2){
             return false
@@ -251,11 +257,13 @@ async function initFramePopup(userId, quoteId, frame) {
                 addTagFrame.innerHTML = addTagText;
                 const outsider = document.createElement('div');
                 outsider.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1 icon icon-tabler icons-tabler-outline icon-tabler-tag">
+                    <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecp="round" stroke-linejoin="round" class="me-1 icon icon-tabler icons-tabler-outline icon-tabler-tag">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                         <path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                         <path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z" />
-                    </svg>
+                    </svg>                
+                    </div>
                     <div class="tag-container justify-content-between align-items-center">
                         <div class="hint">
                             <div class="me-2 hint" style="color:grey">Add Tag</div>
@@ -335,11 +343,13 @@ async function initFramePopup(userId, quoteId, frame) {
 
         // 清空原始 frame 的内容
         frame.innerHTML = `
+            <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1 icon icon-tabler icons-tabler-outline icon-tabler-tag">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                 <path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z" />
             </svg>
+            </div>
             <div style="height:23px"> </div>`;
 
 
