@@ -1,5 +1,4 @@
 import { changeSearchFilm } from '../../api/film_api.js'
-import { initSearch } from '../search/search-display.js'
 
 function updateFilmTick() {
     const films = document.querySelectorAll('.dropdown-item')
@@ -23,9 +22,7 @@ function updateFilmTick() {
 document.addEventListener('DOMContentLoaded', async () => {
     // 假设后端传递的数据类似于 [(film_name, id), (film_name, id)]
     // 获取容器，准备插入下拉按钮
-    const dropdownContainer = document.getElementById('dropdown-container');
-    if (userFollowedFilm.length === 1) { return; }
-
+    const dropdownContainer = document.getElementById('select-film-dropdown');
     // 创建按钮
     const btn = document.createElement('button');
     const dropDownBtn = document.createElement('div');
@@ -60,7 +57,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (filmName !== currentFilmName) {
                 await changeSearchFilm(userId, filmId)
                 dropDownBtn.style.display = 'none';
-                window.location.replace("search")
+                console.log(window.location.href)
+                window.location.replace(window.location.href)
             }
             // 你也可以在这里执行额外的逻辑，如将电影ID发送到服务器等
             console.log(`Film selected: ${filmName} (ID: ${filmId})`);

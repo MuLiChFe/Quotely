@@ -12,6 +12,7 @@
         navSidebar.setAttribute('aria-expanded', navSidebarIsOpen);
 
         toggleNavSidebar.addEventListener('click', function() {
+            console.log('click')
             if (navSidebarIsOpen === 'true') {
                 navSidebarIsOpen = 'false';
             } else {

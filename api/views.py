@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 
 from django.views.decorators.csrf import csrf_exempt
 from registration.models import Workspace, TeamMember, User
-from engine.models import Film, Quote,Tag, Color, UserTagOrder, TagQuoteManager
+from engine.models import Film, Quote,Tag, Color, UserTagOrder, TagQuoteManager, Folder, FolderUserManager
 
 import json
 from datetime import datetime
@@ -87,7 +87,8 @@ def get_stander_quote_card(request):
     return render(request, 'public/quote/stander_quote_card.html')
 def get_popup_quote_card(request):
     return render(request, 'public/quote/popup_quote_card.html')
-
+def get_mini_quote_card(request):
+    return render(request, 'public/quote/mini_quote_card.html')
 
 def user_marks(request):
     if request.method == 'POST':
@@ -117,12 +118,15 @@ def user_marks(request):
             elif category == 'quote':
                 followed_quotes = user.followed_quotes.all()  # 获取用户关注的引用
                 quote_list = [{
-                    "quote_id": quote.id,
+                    "id": quote.id,
                     "film_name": quote.film_name,
+                    "number": quote.number,
+                    "start_time": quote.start_time,
+                    "end_time": quote.end_time,
                     "text": quote.text,
+                    "tags": [tag.display_name for tag in quote.tags.all()]
                 } for quote in followed_quotes]
                 return JsonResponse(quote_list, safe=False)
-
             else:
                 return JsonResponse({'message': 'Invalid category'}, status=400)
 
@@ -293,7 +297,7 @@ def get_marker(request):
                 quote = Quote.objects.filter(id=target_id).first()
                 if quote:
                     quote_dict = {
-                        "quote_id": quote.id,
+                        "id": quote.id,
                         "film_name": quote.film_name,
                         "number": quote.number,
                         "start_time": quote.start_time,
@@ -616,6 +620,7 @@ def quote_tags(request):
             data = json.loads(request.body)
             user_id = data.get('user_id')
             quote_id = data.get('quote_id')
+            print(user_id, quote_id)
             sort_type = data.get('sort_type', "default")
 
             # 检测字段完整性
@@ -669,6 +674,7 @@ def update_user_tag_order(request):
             user_id = data.get('user_id')
             workspace_id = data.get('workspace_id')
             ordered_tags = data.get('ordered_tags')
+            print(user_id, workspace_id, ordered_tags)
             # 获取用户和工作区
             user = User.objects.get(id=user_id)
             if workspace_id != 'null':
@@ -777,6 +783,43 @@ def change_search_film(request):
             return JsonResponse({'message': f'An error occurred: {str(e)}'}, status=500)
 
     return JsonResponse({'message': 'Invalid method'}, status=405)
+
+
+def create_folder(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_id = data.get('user_id')
+            related_film_id = data.get('film_id')
+            folder_name = data.get('folder_name')
+            description = data.get('description')
+            related_film = Film.objects.get(id=related_film_id)
+            user = User.objects.get(id=user_id)
+            new_folder = Folder.objects.create(
+                name=folder_name,
+                description=description,
+                related_film=related_film,
+                user=user,
+            )
+            new_folder.save()
+            return JsonResponse({'state': True}, status=200)
+        except Exception as e:
+            return JsonResponse({'message': f'An error occurred: {str(e)}','state':False}, status=500)
+    return JsonResponse({'message': 'Invalid method'}, status=405)
+def get_folders(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_id = data.get('user_id')
+            related_film_id = data.get('film_id')
+            mode = data.get('mode')
+            folders = Folder.objects.filter(user_id=user_id)
+            print(folders)
+            return JsonResponse({'state': True}, status=200)
+        except Exception as e:
+            return JsonResponse({'message': f'An error occurred: {str(e)}','state':False}, status=500)
+    return JsonResponse({'message': 'Invalid method'}, status=405)
+
 
 
 

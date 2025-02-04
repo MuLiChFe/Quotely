@@ -1,0 +1,104 @@
+{% extends 'template/user_base.html' %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/public/library/text_card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/quote/quote_card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/tag/tag_btn.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/color/color_btn.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/film/select_film_btn.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public/folder/folder_page.css' %}">
+    <!-- HTMX and SortableJS -->
+    <script src="https://unpkg.com/htmx.org@1.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+
+{% endblock %}
+
+{% block main-body %}
+    <div id="main-content" class="col px-0" style="width: 80%">
+        {% csrf_token %}
+        <div class="container-fluid my-5 mx-4" style="margin-top:0!important; margin-left:10px!important;margin-right:10px!important; width: 100%; overflow: hidden">
+        <div id="select-film-dropdown" style="height: 30px!important; margin-left: 20px; margin-bottom: 8px"></div>
+            <div class="p-0 w-100 text-center align-items-center">
+                <div class="container w-100 d-flex flex-column align-items-center justify-content-center">
+                    {#                    <div class="fs-1">Folder Manager</div>#}
+                    <div class="justify-content-between align-items-center w-100 d-flex mt-3">
+                        <div class="d-flex align-items-center">
+                            <div type="button" class="btn btn-text nav-bar align-items-center sort-bar" sortType="favourite" selectedColor="#dc2625" style="fill:#9c9b98; color:#9c9b98">
+                                <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 64 64" width="20px" height="20px" class="mb-1">
+                                    <path xmlns="http://www.w3.org/2000/svg" d="m56,24c0,13.95-14.65,25.51-24,32-9.35-6.49-24-18.05-24-32,0-8.54,5.82-14,13-14,4.92,0,9.15,2.97,11,7.21,1.85-4.24,6.08-7.21,11-7.21,7.18,0,13,5.46,13,14Z" fill="#currentColor"/>
+                                    <span class="align-left" style="fill: currentColor">
+                                    Favourite
+                                    </span>
+                                </svg>
+                            </div>
+                            <div type="button" class="btn btn-text nav-bar align-items-center sort-bar" sortType="folder" selectedColor="#0d9488" style="fill:#9c9b98; color:#9c9b98">
+                                <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 64 64" width="20px" height="20px" class="mb-1">
+                                    <path xmlns="http://www.w3.org/2000/svg" d="m56,16v8H8v-14h12.76c3.03,0,5.1.85,7.24,3,2.15,2.15,4.21,3,7.24,3h20.76ZM8,46c0,4.94,3.06,8,8,8h32c4.94,0,8-3.06,8-8v-18H8v18Z" fill="#currentColor"/>
+                                    <span class="align-left" style="color: currentColor">
+                                    Folder
+                                </span>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div type="button" id="filter-btn" class="btn btn-text mt-1" hover-hint="Filter" style="width: 32px; padding: 6px">
+                                 <svg role="graphics-symbol" viewBox="0 0 16 16" style="width: 18px; display: block; fill: #9c9b98; flex-shrink: 0;">
+                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M2 4C2 3.58579 2.33579 3.25 2.75 3.25H13.25C13.6642 3.25 14 3.58579 14 4C14 4.41421 13.6642 4.75 13.25 4.75H2.75C2.33579 4.75 2 4.41421 2 4Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 8C3.75 7.58579 4.08579 7.25 4.5 7.25H11.5C11.9142 7.25 12.25 7.58579 12.25 8C12.25 8.41421 11.9142 8.75 11.5 8.75H4.5C4.08579 8.75 3.75 8.41421 3.75 8Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 12C5.5 11.5858 5.83579 11.25 6.25 11.25H9.75C10.1642 11.25 10.5 11.5858 10.5 12C10.5 12.4142 10.1642 12.75 9.75 12.75H6.25C5.83579 12.75 5.5 12.4142 5.5 12Z"></path>
+                                 </svg>
+                            </div>
+                            <div type="button" id="order-btn" class="btn btn-text d-flex mt-1" hover-hint="Sort" style="width: 32px;padding: 5px">
+                                <svg role="graphics-symbol" viewBox="0 0 24 24" class="sortPadded" style="width: 20px; display: block; fill: #9c9b98; flex-shrink: 0;">
+                                    <path d="M7.50879 5.80273L4.06348 9.32324C3.92676 9.4668 3.83789 9.67188 3.83789 9.85645C3.83789 10.2803 4.13184 10.5674 4.54883 10.5674C4.75391 10.5674 4.91797 10.499 5.04785 10.3623L6.46289 8.89941L7.37891 7.83984L7.32422 9.30273V17.8477C7.32422 18.2715 7.625 18.5723 8.04199 18.5723C8.45898 18.5723 8.75977 18.2715 8.75977 17.8477V9.30273L8.70508 7.83984L9.62793 8.89941L11.0361 10.3623C11.166 10.499 11.3369 10.5674 11.5352 10.5674C11.9521 10.5674 12.2461 10.2803 12.2461 9.85645C12.2461 9.67188 12.1641 9.4668 12.0205 9.32324L8.58203 5.80273C8.28125 5.48828 7.80957 5.48145 7.50879 5.80273ZM16.4912 18.3398L19.9365 14.8057C20.0732 14.6689 20.1621 14.4639 20.1621 14.2793C20.1621 13.8555 19.8682 13.5684 19.4512 13.5684C19.2461 13.5684 19.082 13.6367 18.9453 13.7734L17.5371 15.2295L16.6211 16.2959L16.6758 14.833V6.28809C16.6758 5.87109 16.375 5.56348 15.958 5.56348C15.541 5.56348 15.2334 5.87109 15.2334 6.28809V14.833L15.2881 16.2959L14.3721 15.2295L12.9639 13.7734C12.8271 13.6367 12.6631 13.5684 12.4648 13.5684C12.0479 13.5684 11.7539 13.8555 11.7539 14.2793C11.7539 14.4639 11.8359 14.6689 11.9727 14.8057L15.418 18.3398C15.7188 18.6475 16.1904 18.6543 16.4912 18.3398Z"></path>
+                                </svg>
+                            </div>
+                            <div type="button" id="search-btn" class="btn btn-text d-flex mt-1" hover-hint="Search" style="width: 32px;padding: 8px">
+                                <svg role="graphics-symbol" viewBox="0 0 16 16" class="collectionSearch" style="width: 14px; display: block; fill: rgba(55, 53, 47, 0.45); flex-shrink: 0;">
+                                    <path d="M0 6.35938C0 9.86719 2.85156 12.7188 6.35938 12.7188C7.66406 12.7188 8.85938 12.3203 9.85938 11.6406L13.4531 15.2344C13.6719 15.4609 13.9766 15.5625 14.2812 15.5625C14.9453 15.5625 15.4219 15.0625 15.4219 14.4141C15.4219 14.1016 15.3125 13.8125 15.1016 13.5938L11.5312 10.0156C12.2734 8.99219 12.7188 7.72656 12.7188 6.35938C12.7188 2.85156 9.86719 0 6.35938 0C2.85156 0 0 2.85156 0 6.35938ZM1.65625 6.35938C1.65625 3.76562 3.75781 1.65625 6.35938 1.65625C8.95312 1.65625 11.0625 3.76562 11.0625 6.35938C11.0625 8.95312 8.95312 11.0625 6.35938 11.0625C3.75781 11.0625 1.65625 8.95312 1.65625 6.35938Z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <hr width="100%" color=#9c9b98 style="margin:0">
+                </div>
+                <div id="filter-container" class="d-flex pt-2 hidden" style="margin-left: 30px; margin-right: 30px;">
+                    <div id="tag-filter" class="filter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width: 16px; height: 16px">
+                            <path d="m34,10H10v24l24,24,24-24-24-24Zm-13,14c-1.66,0-3-1.34-3-3s1.34-3,3-3,3,1.34,3,3-1.34,3-3,3Z" fill="#currentColor"/>
+                        </svg>
+                        Tag
+                    </div>
+                    <div id="owner-filter" class="filter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width: 16px; height: 16px">
+                            <path xmlns="http://www.w3.org/2000/svg" d="m21,19c0-6.79,4.21-11,11-11s11,4.21,11,11-4.21,11-11,11-11-4.21-11-11Zm11,15c-13.57,0-22,8.43-22,22h44c0-13.57-8.43-22-22-22Z" fill="#currentColor"/>
+                        </svg>
+                        Owner
+                    </div>
+                    <div id="type-filter" class="filter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="width: 16px; height: 16px">
+                            <path xmlns="http://www.w3.org/2000/svg" d="m38.49,32h-14.49V8h24v18h-6.04l-3.46,6Zm-18.49,4v-14c-7.73,0-14,6.27-14,14s6.27,14,14,14,14-6.27,14-14h-14Zm27.73-6h-3.46l-12.12,21c.77,1.33.96,1.67,1.73,3h24.25c.77-1.33.96-1.67,1.73-3l-12.12-21Z" fill="#currentColor"/>
+                        </svg>
+                        Type
+                    </div>
+                </div>
+            </div>
+            <div id="display-body" class="folder-body justify-content-between align-items-center mt-2">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/public/left_bar.js' %}"></script>
+    <script src="{% static 'js/public/user_card.js' %}"></script>
+    <script src="{% static 'js/tooltip.js' %}"></script>
+    <script>
+        var currentFilmName = `{{ searching_film.display_name }}`;
+        var filmName = `{{ searching_film.film_name }}`
+        var userFollowedFilm = {{ user_followed_film|safe }};
+        var userId = {{ user.id }};
+        var filmId = {{ film_id }};
+    </script>
+    <script type="module" src="{% static 'js/public/film/select-film-btn.js' %}"></script>
+    <script type="module" src="{% static 'js/public/folder/folder-page.js' %}"></script>
+
+{% endblock main-body %}

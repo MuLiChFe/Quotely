@@ -8,6 +8,8 @@ urlpatterns = [
 
     path('get_stander_quote_card/', views.get_stander_quote_card, name='get_stander_quote_card'),
     path('get_popup_quote_card/', views.get_popup_quote_card, name='get_popup_quote_card'),
+    path('get_mini_quote_card/', views.get_mini_quote_card, name='get_mini_quote_card'),
+
     path('user_marks/', views.user_marks, name='get_user_markers'),
     path('add_marker/', views.add_marker, name='add_marker'),
     path('remove_marker/', views.remove_marker, name='remove_marker'),
@@ -28,6 +30,9 @@ urlpatterns = [
     path('change_color/', views.change_color, name='change_color'),
 
     path('change_search_film/',views.change_search_film, name='change_search_film'),
+
+    path('create_folder/', views.create_folder, name='create_folder'),
+    path('get_folders/',views.get_folders, name='get_folders'),
 
     path('test_api', views.test_api, name='test'),
     path('test_tag', views.test_tag, name='test_tag'),

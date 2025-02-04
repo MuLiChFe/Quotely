@@ -43,16 +43,16 @@ export function renameSettingTag(userId, tagId) {
 
     // 调用 renameTag 函数
     RenameTag(userId, tagId, input.value);
-
     // 更新所有相关的标签
     const tags = document.querySelectorAll(`div[tag-id="${tagId}"]`);
     tags.forEach(div => {
         div.querySelector('.tag-name').textContent = input.value;
+        div.setAttribute('new-name',input.value);
     });
     return true
 }
 
-function tagNameEditing(userId,tagId,frame,tagName){
+function tagNameEditing(userId,tagId,frame,tagName,onClose){
     console.log('tagName',tagName);
     const input = document.createElement('input');
     input.classList.add('form-control','tag-name-edit-input');
@@ -66,7 +66,13 @@ function tagNameEditing(userId,tagId,frame,tagName){
 
     input.addEventListener('keydown',(event)=>{
         if (event.key === 'Enter') {
-            renameSettingTag(userId,tagId,)
+            if (renameSettingTag(userId,tagId)){
+                frame.innerHTML = '';
+                frame.zIndex = '0'
+                frame.style.display = 'none';
+                frame.setAttribute('able-close',true)
+                onClose()
+            }
         }
     })
 }
@@ -131,12 +137,12 @@ export function deleteTag(userId, tagId, frame) {
             () => {
                 // 确认删除
                 DeleteTag(userId, tagId);
+                document.querySelector('.tag-setting-popup').remove();
+                document.querySelector('.tag-setting').remove();
                 const tags = document.querySelectorAll(`div[tag="${tagId}"]`);
                 tags.forEach(div => {
                     div.remove();
                 });
-                document.querySelector('.tag-setting-popup').remove();
-                document.querySelector('.tag-setting').remove();
             },
         );
     });
@@ -219,7 +225,7 @@ function switchWorkspace(userId,tagId,fatherFrame){
 }
 
 
-export async function createTagSetting(userId,tag,fatherFrame) {
+export async function createTagSetting(userId,tag,fatherFrame,onClose) {
     currentColorId = tag.color_id;
     tagName = document.querySelector(`div[tag-id="${tag.id}"]`).innerText
 
@@ -227,7 +233,7 @@ export async function createTagSetting(userId,tag,fatherFrame) {
     const colorFrame = document.createElement('div')
     colorFrame.classList.add('color-selections')
 
-    tagNameEditing(userId,tag.id,fatherFrame,tagName);
+    tagNameEditing(userId,tag.id,fatherFrame,tagName,onClose);
 
     deleteTag(userId,tag.id,fatherFrame)
 
@@ -235,7 +241,7 @@ export async function createTagSetting(userId,tag,fatherFrame) {
 
     divider(fatherFrame);
 
-    await defaultColorSelection(userId,tag.id,colorFrame, colors.colorList);
+    await defaultColorSelection(userId,tag.id,colorFrame, colors.colorList,);
 
     fatherFrame.appendChild(colorFrame);
 }

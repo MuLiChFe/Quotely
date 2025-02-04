@@ -63,3 +63,24 @@ class TagQuoteManager(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"{self.tag.display_name} - {self.quote.number},{self.create_at.strftime('%m/%d/%Y')}"
+
+class Folder(models.Model):
+    name = models.CharField(max_length=255)
+    create_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey('registration.User', on_delete=models.CASCADE, related_name="own_folders", default=1)
+    related_film = models.ForeignKey('Film', on_delete=models.SET_NULL, null=True, blank=True, related_name="film_folders")
+    # Concise details can help enhance your focus
+    description = models.TextField(default="")
+
+    def __str__(self):
+        return f"{self.name} - {self.created_by.username if self.created_by else 'DEFAULT'}"
+
+class FolderUserManager(models.Model):
+    folder = models.ForeignKey('Folder', on_delete=models.CASCADE, related_name='folder_users')
+    user = models.ForeignKey('registration.User', on_delete=models.CASCADE, related_name='folder_users')
+    role = models.CharField(choices=[('owner', 'Owner'),('editor','Editor'), ('visitor', 'Visitor')], max_length=20, default='visitor')
+    create_at = models.DateTimeField(auto_now_add=True)
+    last_viewed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.folder.display_name} - {self.user.username if self.user else 'DEFAULT'} - {self.role}"

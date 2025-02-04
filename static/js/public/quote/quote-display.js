@@ -92,15 +92,18 @@ export async function loadQuoteCardTemplate(templateText,quote) {
 
     // 填充模板内容
     clone.querySelector('.card-title').innerText = quote.text;
-    clone.querySelector('.text-muted').innerText = `From ${quote.start_time} to ${quote.end_time}`;
-    clone.querySelector('.favorite-btn').setAttribute('data-quote-id', quote.id);
-    // 获取按钮元素并初始化
-    const favoriteButton = clone.querySelector(`[data-quote-id='${quote.id}']`);
-    initFavoriteButton(userId, favoriteButton);
-    // 在这里将获取的tag 绑定到卡片上去
-    const tagFrame = clone.querySelector('.tags')
-    loadTagButtons(userId,quote.id,tagFrame)
 
+    const textTime = clone.getElementById('text-time')
+    if (textTime) {
+        textTime.innerText = `From ${quote.start_time} to ${quote.end_time}`;
+    }
+    const favoriteButton = clone.querySelector('.favorite-btn')
+    if (favoriteButton) {
+        favoriteButton.setAttribute('data-quote-id', quote.id);
+        initFavoriteButton(userId, favoriteButton);
+    }
+    const tagFrame = clone.querySelector('.tags')
+    const tagsDict = await loadTagButtons(userId,quote.id,tagFrame)
     const popup = clone.querySelector('.quote-popup-btn')
     if (popup) {
         popup.addEventListener('click', () => {
@@ -138,25 +141,25 @@ export async function loadQuoteCardTemplate(templateText,quote) {
     }
 
     // 返回模板（现在已经填充了数据）
-    return clone;
+    return [clone, tagsDict];
 }
 
 // 初始化收藏按钮
 export async function initFavoriteButton(userId, buttonElement) {
+    console.log('favoriteQuotes',favoriteQuotes)
     let quoteId = buttonElement.getAttribute("data-quote-id"); // 从 data-attribute 获取 quoteId
     // 判断当前 quote 是否已经被收藏
-    quoteId = parseInt(quoteId)
-    const isFavorite = favoriteQuotes.some(quote => quote.quote_id === quoteId);
+    const isFavorite = favoriteQuotes.some(quote => parseInt(quote.id) === parseInt(quoteId));
+    console.log('isFavorite',isFavorite)
     updateFavoriteButtonState(buttonElement, isFavorite);
 
     // 绑定点击事件到按钮
     buttonElement.addEventListener("click", async () => {
-        console.log(quoteId,favoriteQuotes)
         const currentState = buttonElement.classList.contains("favorited");
         let success;
         if (currentState){
             success = await removeMarker("quote", userId, quoteId);
-            favoriteQuotes = favoriteQuotes.filter(quote => quote.quote_id !== quoteId);
+            favoriteQuotes = favoriteQuotes.filter(quote => quote.id !== quoteId);
         } else {
             success = await addMarker("quote", userId, quoteId);
             favoriteQuotes.push({'quote_id':quoteId});
@@ -193,9 +196,24 @@ export async function loadQuotes(userId,containerId, quoteList,type) {
     for (let quote of quoteList) {
         const outsideFrame = document.createElement('div')
         outsideFrame.setAttribute('info-card',quote.id);
-        const card = await loadQuoteCardTemplate(templateText,quote); // 加载并填充模板
+        const [card,tagsDict] = await loadQuoteCardTemplate(templateText,quote); // 加载并填充模板
         outsideFrame.appendChild(card);
         quoteContainer.appendChild(outsideFrame);
+
+        const tagFilter = sessionStorage.getItem('folder-tag-filter-list-str');
+        if (tagFilter){
+            let displayFlag = false;
+            if (tagsDict) {
+                tagsDict.tags.forEach(tag=>{
+                    if (displayFlag){return}
+                    const code = `#${tag.id}#`
+                    if (tagFilter.search(code) !== -1) {
+                        displayFlag = true;
+                    }
+                })
+            }
+            outsideFrame.style.display = displayFlag?'block':'none';
+        }
     }
 }
 

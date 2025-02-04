@@ -36,17 +36,17 @@
 
 
 .film-video{
-    height: 500px;
-    width: 900px;
+    height: 34vw;
+    width: auto;
     margin-left: 4px;
 }
 
 .dialog-container{
-    width: 332px;
-    margin-left: 8px;
+    width: 93%;
+    margin-left: 16px;
     /*background: var(--platform-light-grey);*/
     border-radius: 8px;
-    height: 570px;
+    height: 75vh;
     text-align: left;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -72,3 +72,4 @@
     font-weight: bold;  /* 使用 'bold' 关键字 */
     background: var(--platform-grey);
 }
+

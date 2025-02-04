@@ -16,7 +16,7 @@
     <div id="main-content" class="col px-0">
         {% csrf_token %}
         <div class="container-fluid my-5 mx-4" style="margin-top:0!important; margin-left:10px!important;margin-right:10px!important;">
-                <div id="dropdown-container" style="height: 30px!important; margin-left: 20px;">
+                <div id="select-film-dropdown" style="height: 30px!important; margin-left: 20px; margin-bottom: 8px">
                 </div>
             <div class="row w-100">
                 <div class="p-0 w-100 text-center align-items-center">
@@ -117,4 +117,5 @@
     </script>
     <script type="module" src="{% static 'js/public/film/select-film-btn.js' %}"></script>
     <script type="module" src="{% static 'js/public/search/search-display.js' %}"></script>
+
 {% endblock main-body %}

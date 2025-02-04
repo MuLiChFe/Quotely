@@ -1,4 +1,21 @@
+function leftBarWidthFit(){
+    let type = '';
+    const flag = sessionStorage.getItem("sidebarExpand",false);
+    console.log('flag',flag)
+    if (flag === 'true'){
+        type = 'sidebar-width';
+    } else {
+        type = 'original-width';
+    }
+    const Divs = document.querySelectorAll(`[${type}]`)
+    Divs.forEach(div =>{
+        console.log(div,div.getAttribute(`${type}`));
+        div.style.width = div.getAttribute(`${type}`);
+    })
+}
+
 function process(flag){
+    leftBarWidthFit()
     document.querySelectorAll(".explanations").forEach(element => {
         if (flag) {
             element.classList.add("show"); // 添加显示类
@@ -15,6 +32,7 @@ function process(flag){
         }
     });
 }
+
 function toggleSidebar() {
     const sidebar = document.getElementById("left-bar");
 
@@ -34,8 +52,6 @@ function PageNavigator(targetUrl) {
     if (currentUrl === targetUrl) {
         return; // 不跳转
     }
-
     // 跳转到目标页面
     window.location.href = targetUrl;
 }
-

@@ -70,6 +70,19 @@
     padding: 15px;
     display: flex;
     flex-direction: column;
+}
+
+.card-body.mini {
+    border-radius: 0px;
+    cursor: pointer;
+    /*border-bottom: 1px solid var(--platform-dark-grey);*/
+    border-top: 1px solid var(--platform-dark-grey);
+    border-left: 1px solid var(--platform-grey);
+    border-right: 1px solid var(--platform-grey);
+}
+
+.card-body.mini:hover {
+    background: var(--platform-light-grey);
 
 }
 
@@ -77,6 +90,12 @@
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 0px;
+}
+
+.card-title.over-hidden{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .card-text {
@@ -130,4 +149,14 @@
 .btn:disabled {
     opacity: 1; /* 恢复不透明 */
     pointer-events: none; /* 防止点击 */
+}
+
+.folder-body{
+    margin-left: 30px;
+    margin-right: 30px;
+    overflow: auto;
+    width: 95%;
+    border-top:1px solid var(--platform-dark-grey);
+    border-bottom: 2px solid var(--platform-dark-grey);
+
 }

@@ -11,6 +11,12 @@
     --platform-grey: #efefef;
     --platform-dark-grey: #9c9b98;
     --platform-title-grey: #53514d;
+
+    --text-yellow: #d97708;
+    --text-purple: #9334ea;
+    --text-red: #dc2625;
+    --text-green: #0d9488;
+    --text-blue: #2463eb
 }
 
 
@@ -26,6 +32,31 @@
     --border-color: var(--platform-green-hover) !important;
     box-shadow: 0 0 0 0.25rem rgba(13, 163, 127, 0.25) !important; /* 设置绿色阴影 */
 }
+
+.btn-text {
+    --bs-btn-bg: white !important;
+    --bs-btn-hover-bg: var(--platform-light-grey) !important;
+    --bs-btn-active-bg: var(--platform-light-grey) !important;
+    /*text-underline: black;*/
+}
+.btn-text.nav-bar{
+    --bs-btn-active-bg: white !important;
+    border-bottom-left-radius: 0  !important;
+    border-bottom-right-radius: 0 !important;
+    border: none;
+}
+
+.btn-text.nav-bar.selected{
+    /*border: 1px black solid !important;*/
+    border-bottom: 2px black solid !important;
+    border-color: currentColor !important;
+    /*border-radius: 0px;*/
+}
+
+.btn-primary:focus, textarea:focus, select:focus {
+    --border-color: white !important;
+}
+
 
 .btn-blue {
     --bs-btn-bg: var(--platform-blue) !important;
@@ -144,6 +175,24 @@
     transform: translateY(-50%) rotate(180deg) scale(200%); /* 旋转90度 */
 }
 
+.hover-tip{
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding: 4px 4px;
+    border-radius: 5px;
+    font-size: 14px;
+    visibility: hidden; /* 初始状态不可见 */
+    box-shadow: 1px 1px 3px grey;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+.hover-tip.show {
+    visibility: visible;
+    opacity: 1;
+}
+
 .background-btn {
     display: block; /* 确保按钮是块级元素 */
     width: 100%; /* 占满横向空间 */
@@ -188,8 +237,8 @@ a.text-primary {
 
 
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 5px;
+    height: 5px;
 }
 
 /* Track */

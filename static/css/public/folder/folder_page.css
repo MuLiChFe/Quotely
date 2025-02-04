@@ -1,0 +1,22 @@
+.filter{
+    height: 23px;
+    border-radius: 11px;
+    border: var(--platform-dark-grey) 1px solid;
+    color: var(--platform-dark-grey);
+    fill: var(--platform-dark-grey);
+    padding-left: 4px;
+    padding-right: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 2px;
+    transition: opacity 0.5s ease;
+}
+
+.filter:hover {
+    background: var(--platform-light-grey);
+}
+
+
+.hidden {
+    display: none !important;
+}

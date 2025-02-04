@@ -149,46 +149,94 @@ def library(request,):
     return render(request, 'engine/library/library.html',context)
 
 
-def search(request,):
-    t = time.time()
-    flag, user = user_info(request)
-    if not flag or flag == 'no user_id':
-        return redirect('engine:index')
-    searching_film = {"display_name":"Haven't follow any film or book yet"}
+def get_searching_film_and_film_id(request, user):
+    """
+    根据用户的 session 或者用户已关注的电影获取正在搜索的电影和电影ID
+    """
+    searching_film = {"display_name": "Haven't follow any film or book yet"}
     searching_film_id = request.session.get("searching_film_id", '')
-    query = request.GET.get('q', '')
-
     user_followed_film = user.followed_films.all().values_list('id', 'display_name')
-    print(user_followed_film)
+
+    # 如果没有找到正在搜索的电影，选择用户已关注的第一部电影
     if not searching_film_id:
         if user.followed_films.all():
             searching_film = list(user.followed_films.all())[0]
             request.session["searching_film_id"] = searching_film.id
-    else:
+            searching_film_id = searching_film.id
+        else:
+            return False,[]
+
+    # 如果有搜索的电影 ID，则检查该电影是否存在于用户已关注的电影中
+    if searching_film_id:
         searching_state = user_followed_film.filter(id=searching_film_id).exists()
         if not searching_state:
-            request.session.pop('searching_film_id')
-            return redirect('engine:search')
+            request.session.pop('searching_film_id')  # 清除无效的电影ID
+            return None, None  # 返回None，表示没有有效的电影
         searching_film = user.followed_films.get(id=searching_film_id)
+
+    # 返回找到的电影和电影 ID
+    return True,[searching_film, searching_film_id, user_followed_film]
+
+def search(request):
+    t = time.time()
+    flag, user = user_info(request)
+    if not flag or flag == 'no user_id':
+        return redirect('engine:index')
+
+    flag, list_ = get_searching_film_and_film_id(request, user)
+    if flag:
+        searching_film, searching_film_id, user_followed_film = list_
+    else:
+        return render(request, 'template/no_film.html', {'user': user,'go2_page':'search'})
+    if not searching_film:  # 如果没有有效的电影，重定向到文件夹页面
+        searching_film = user.followed_films.get(id=searching_film_id)
+
+
+    # 处理搜索请求
+    query = request.GET.get('q', '')
     if query:
-        quote_list = list(Quote.objects.filter(film_name=searching_film.film_name if searching_film else "", text__icontains=query).values('id','film_name', 'text', 'start_time', 'end_time'))
+        quote_list = list(Quote.objects.filter(film_name=searching_film.film_name if searching_film else "", text__icontains=query).values('id', 'film_name', 'text', 'start_time', 'end_time'))
     else:
         quote_list = []
 
-    followed_film_list = []
-    for id, display_name in list(user_followed_film):
-        followed_film_list.append({'id': id, 'display_name': display_name})
+    followed_film_list = [{'id': id, 'display_name': display_name} for id, display_name in list(user_followed_film)]
 
     sidebarExpand = request.session.get('sidebarExpand', False)
-    context = {'user': user,
-               'sidebarExpand': sidebarExpand,
-               'user_followed_film':followed_film_list,
-               'query': query,
-               'searching_film': searching_film,
-               'quote_list': quote_list,
-               'film_id':searching_film_id,
-               'number_of_results': len(quote_list),
-               'time_taken': f"{float(time.time() - t):.5f}",
-               'error_message': "Too many results, please exact keywords" if len(quote_list) > 40 else "",
-               }
+    context = {
+        'user': user,
+        'sidebarExpand': sidebarExpand,
+        'user_followed_film': followed_film_list,
+        'query': query,
+        'searching_film': searching_film,
+        'quote_list': quote_list,
+        'film_id': searching_film_id,
+        'number_of_results': len(quote_list),
+        'time_taken': f"{float(time.time() - t):.5f}",
+        'error_message': "Too many results, please exact keywords" if len(quote_list) > 80 else "",
+    }
     return render(request, 'engine/search/search.html', context)
+
+def folder(request):
+    flag, user = user_info(request)
+    if not flag or flag == 'no user_id':
+        return redirect('engine:index')
+
+    # 获取搜索电影和电影ID
+    flag, list_ = get_searching_film_and_film_id(request, user)
+    if flag:
+        searching_film, searching_film_id, user_followed_film = list_
+    else:
+        return render(request, 'template/no_film.html', {'user': user,'go2_page':'folder'})
+    if not searching_film:  # 如果没有有效的电影，重定向到文件夹页面
+        searching_film = user.followed_films.get(id=searching_film_id)
+
+
+    followed_film_list = [{'id': id, 'display_name': display_name} for id, display_name in list(user_followed_film)]
+
+    context = {
+        'user': user,
+        'searching_film': searching_film,
+        'user_followed_film': followed_film_list,
+        'film_id': searching_film_id,
+    }
+    return render(request, 'engine/folder/folder.html', context)

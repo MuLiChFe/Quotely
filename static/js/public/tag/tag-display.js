@@ -116,15 +116,20 @@ async function createNewTag(quoteId,display_name,workspace_id) {
             popupAskWorkspaceId(quoteId,display_name)
             return
         } else {
-            workspace_id = '';
+            workspace_id = 0;
         }
     }
     const tag = await CreatTag(userId, display_name, workspace_id, filmId);
     const tagFrame = document.querySelector('.tags-opened').querySelector('.tag-container');
-    let userSelection = document.querySelectorAll('.selection-frame');
-    const index = findIndexById(workspace_id)
-    // userSelection = userSelection[index-1]
-    userSelection = userSelection[index];
+    let userSelection
+    if (workspace_id === 0) {
+        userSelection = document.querySelector('.selection-frame')
+    } else {
+        userSelection = document.querySelectorAll('.selection-frame');
+        const index = findIndexById(workspace_id)
+        // userSelection = userSelection[index-1]
+        userSelection = userSelection[index];
+    }
     const hint = tagFrame.querySelector('.hint')
     if (hint) {
         hint.remove()
@@ -161,7 +166,8 @@ async function createNewTagBtn(quoteId,display_name,fatherFrame) {
     fatherFrame.appendChild(newTagBtn);
 
     newTagBtn.addEventListener('click',()=>{
-        createNewTag(quoteId,display_name);
+        createNewTag(quoteId,display_name,selectedWorkspaceId)
+        closePopupQuote();
     })
 
     return true
@@ -220,22 +226,32 @@ async function initFramePopup(userId, quoteId, frame) {
     let popupWindow = null; // 当前的弹窗
     let popupContent = null; // 当前弹窗内容
     let originalFrameContent = null; // 存储 frame 的原始内容
+    let withSVG = true;
+
     function documentClickHandler(event) {
         console.log('documentClickHandler-clicked')
          if (!popupWindow.contains(event.target)){
              closePopup(false);
          }
     }
+
     // 定义关闭弹窗的逻辑
     const closePopup = (force) => {
         console.log('closePopup:TagSetting')
         const TagListExist = document.querySelector('.tag-setting-popup')
+        const ableCloseTagList = TagListExist ? TagListExist.getAttribute('able-close') : false;
+        if (ableCloseTagList){
+            TagListExist.remove();
+            tag_frame.style.background = 'white';
+            editBtn.style.display = 'none';
+            TagListPopup = 1;
+        }
         if (askWorkspace || TagListExist || TagListPopup === 2){
-            return false
+            return false;
         }
         if (TagListPopup === 1 && !force){
-            TagListPopup -= 1
-            return false
+            TagListPopup -= 1;
+            return false;
         }
         const existingPopup = document.querySelector('.tag-setting-popup');
         if (existingPopup) {
@@ -245,50 +261,53 @@ async function initFramePopup(userId, quoteId, frame) {
         if (isModified) {
             showDeleteButton(popupContent, false);
             const container = popupContent.querySelector('.tags-opened');
-            container.querySelector('.tag-input-frame').remove()
+            container.querySelector('.tag-input-frame').remove();
             const inner = container.innerHTML;
-            // inner.que
             if (inner.search('tag ') !== -1) {
                 frame.innerHTML = inner;
                 originalFrameContent = inner;
             } else {
                 const addTagFrame = document.createElement('div');
-                addTagFrame.classList.add('hint')
+                addTagFrame.classList.add('hint');
                 addTagFrame.innerHTML = addTagText;
                 const outsider = document.createElement('div');
-                outsider.innerHTML = `
-                    <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecp="round" stroke-linejoin="round" class="me-1 icon icon-tabler icons-tabler-outline icon-tabler-tag">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                        <path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z" />
-                    </svg>                
-                    </div>
-                    <div class="tag-container justify-content-between align-items-center">
-                        <div class="hint">
-                            <div class="me-2 hint" style="color:grey">Add Tag</div>
+                if (withSVG) {
+                    outsider.innerHTML = `
+                        <div id="tag-svg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1 icon icon-tabler icons-tabler-outline icon-tabler-tag">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                                <path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z" />
+                            </svg>
                         </div>
-                    </div>`
-                frame.innerHTML = outsider.innerHTML
+                        <div class="tag-container justify-content-between align-items-center">
+                            <div class="hint">
+                                <div class="me-2 hint" style="color:grey">Add Tag</div>
+                            </div>
+                        </div>`;
+                } else {
+                    outsider.innerHTML = `
+                        <div class="tag-container justify-content-between align-items-center">
+                            <div class="hint">
+                                <div class="me-2 hint" style="color:grey">Add Tag</div>
+                            </div>
+                        </div>`;
+                }
+                frame.innerHTML = outsider.innerHTML;
             }
         }
         else {
-            // 如果没有修改，则还原原始内容
             frame.innerHTML = originalFrameContent;
         }
-        // 重置状态
         popupWindow.style.display = 'none';
         popupWindow.remove();
-        // 从 activePopups 中移除当前 popup
         activePopups.delete(frame);
-        document.removeEventListener('click', documentClickHandler); // 解绑监听器
+        document.removeEventListener('click', documentClickHandler);
         isModified = false;
         initFrame = false;
-        return true
-
+        return true;
     };
-        // 在打开新的 popup 之前，确保所有旧的 popup 执行关闭逻辑
-    // 处理 frame 点击的逻辑
+
     const handleFrameClick = (event) => {
         activePopups.forEach(({ closePopup: closeOldPopup }, activeFrame) => {
             if (activeFrame !== frame) {
@@ -297,14 +316,17 @@ async function initFramePopup(userId, quoteId, frame) {
         });
         event.stopPropagation(); // 阻止事件冒泡，避免触发其他区域的点击事件
         originalFrameContent = frame.innerHTML;
+        withSVG = originalFrameContent.includes('tag-svg');
         showDeleteButton(frame, true);
 
         // 如果 popupWindow 不存在，才创建它
         popupWindow = document.createElement('div');
+        console.log('frame',frame)
         popupWindow.classList.add('popup-window', 'm-0', 'p-0');
+        popupWindow.style.width = frame.offsetWidth
         popupWindow.style.position = 'absolute';
         popupWindow.style.display = 'none';
-        popupWindow.innerHTML = `<div class="popup-content"></div>`;
+        popupWindow.innerHTML = `<div class="popup-content" style="max-width: ${frame.offsetWidth}px"></div>`;
         document.body.appendChild(popupWindow); // 将弹窗添加到页面
         popupContent = popupWindow.querySelector('.popup-content');
 
@@ -319,27 +341,24 @@ async function initFramePopup(userId, quoteId, frame) {
             console.error('The root element does not have the class "tags".');
         }
         isModified = false; // 标记内容是否被修改
-        initFrame = true
+        initFrame = true;
         popupContent.appendChild(frameContent);
 
         // 添加输入位子
-        const inputContent = document.createElement('div')
-        inputContent.classList.add('tag-input-frame')
-        inputFrame(userId,quoteId,inputContent);
+        const inputContent = document.createElement('div');
+        inputContent.classList.add('tag-input-frame');
+        inputFrame(userId, quoteId, inputContent);
         frameContent.appendChild(inputContent);
 
-
-        popupContent.appendChild(frameContent);
-
         // 创建 user Tags 的选择
-        const displayFrame = frameContent.querySelector('.tag-container')
-        const hint = document.createElement('div')
-        hint.classList.add('hint','ps-2','pt-1')
+        const displayFrame = frameContent.querySelector('.tag-container');
+        const hint = document.createElement('div');
+        hint.classList.add('hint', 'ps-2', 'pt-1');
         hint.style.under = true;
-        hint.innerHTML = 'Select a tag or create one'
-        popupContent.appendChild(hint)
+        hint.innerHTML = 'Select a tag or create one';
+        popupContent.appendChild(hint);
 
-        miniTagMenu(quoteId,popupContent,displayFrame, userId);
+        miniTagMenu(quoteId, popupContent, displayFrame, userId,'');
 
         // 清空原始 frame 的内容
         frame.innerHTML = `
@@ -352,14 +371,40 @@ async function initFramePopup(userId, quoteId, frame) {
             </div>
             <div style="height:23px"> </div>`;
 
-
         const deleteButtons = popupContent.querySelectorAll('.delete-tag');
-        bindDeleteBtn(deleteButtons,quoteId)
+        bindDeleteBtn(deleteButtons, quoteId);
 
         // 获取 frame 的位置
         const rect = frame.getBoundingClientRect();
-        popupWindow.style.top = `${rect.top + window.scrollY}px`;
-        popupWindow.style.left = `${rect.left + window.scrollX}px`;
+        let popupTop = rect.top + window.scrollY;
+        let popupLeft = rect.left + window.scrollX;
+
+        // 获取 popup 的尺寸
+        const popupHeight = popupWindow.offsetHeight;
+        const popupWidth = popupWindow.offsetWidth;
+
+        // 计算新的 popup 位置，确保不会超出屏幕边界
+        const windowHeight = window.innerHeight;
+        const windowWidth = window.innerWidth;
+
+        if (popupTop + popupHeight > windowHeight) {
+            popupTop = windowHeight - popupHeight - 10; // 距离底部有 10px 的间隙
+        }
+
+        if (popupLeft + popupWidth > windowWidth) {
+            popupLeft = windowWidth - popupWidth - 10; // 距离右边有 10px 的间隙
+        }
+
+        if (popupTop < 0) {
+            popupTop = 10; // 如果顶部超出屏幕，设定为 10px
+        }
+
+        if (popupLeft < 0) {
+            popupLeft = 10; // 如果左边超出屏幕，设定为 10px
+        }
+
+        popupWindow.style.top = `${popupTop}px`;
+        popupWindow.style.left = `${popupLeft}px`;
 
         // 显示当前弹窗
         popupWindow.style.display = 'block';
@@ -374,6 +419,7 @@ async function initFramePopup(userId, quoteId, frame) {
     // 为 frame 添加点击事件
     frame.addEventListener('click', handleFrameClick);
 }
+
 
 async function createTagSelectionPopup(userId,tag,targetElement, tag_frame, editBtn) {
     // 如果已经存在同类弹窗，先移除
@@ -391,19 +437,31 @@ async function createTagSelectionPopup(userId,tag,targetElement, tag_frame, edit
     const popup = document.createElement('div');
     popup.className = 'tag-setting-popup';
 
-    createTagSetting(userId,tag,popup)
+    createTagSetting(userId,tag,popup,()=>{
+        tag_frame.style.background = 'white';
+        editBtn.style.display = 'none';
+        TagListPopup = 1;
+        popup.remove();
+        popupOverlay.remove();
+    })
 
     // 定位弹窗到目标元素的下方并居中
     const rect = targetElement.getBoundingClientRect();
     popup.style.top = `${rect.bottom + window.scrollY + 8}px`; // 距离目标元素下方 8px
-    popup.style.left = `${rect.left + window.scrollX + rect.width / 2 - 75}px`; // 水平居中（假设宽度为150px）
+    let leftPx = 0
+    if (rect.left + window.scrollX + rect.width / 2 + 80 > window.innerWidth) {
+        leftPx = rect.left + window.scrollX + rect.width / 2 -75
+    } else {
+        leftPx = rect.left + window.scrollX + rect.width / 2 - 150
+    }
+    popup.style.left = `${leftPx}px`; // 水平居中（假设宽度为150px）
 
     // 将弹窗添加到页面
     document.body.appendChild(popup);
 
     // 点击遮罩层时仅关闭当前弹窗和遮罩层
     popupOverlay.addEventListener('click', () => {
-        if (!renameSettingTag(userId,tag.id)) {return;}
+        if (!renameSettingTag(userId,tag.id,tag_frame,editBtn)) {return;}
         tag_frame.style.background = 'white';
         editBtn.style.display = 'none';
         TagListPopup = 1;
@@ -522,6 +580,10 @@ function createTag(quoteId,tagFrame,tagDisplayFrame, tag, owned, deletable, allo
             isModified = true;
             const state = await BindTag(userId, tag.id, quoteId);
             if (state.state) {
+                const newName = tag_frame.querySelector('.tag').getAttribute('new-name');
+                if (newName) {
+                    tag['display_name'] = newName;
+                }
                 createTag(quoteId,tagDisplayFrame,'', tag, owned, true, false, false);
                 const deleteButtons = tagDisplayFrame.querySelectorAll('.delete-tag');
                 bindDeleteBtn(deleteButtons,quoteId)
@@ -536,7 +598,6 @@ function createTag(quoteId,tagFrame,tagDisplayFrame, tag, owned, deletable, allo
         const secondLastChild = tagFrame.children[tagFrame.children.length - 2];
         tagFrame.insertBefore(tag_frame, secondLastChild);
     }
-
     tagFrame.appendChild(tag_frame);
 }
 
@@ -586,7 +647,7 @@ function selection(quoteId,fatherFrame,displayFrame,workspace) {
         onEnd: function (evt) {
             const orderedTags = Array.from(body.children).map((tagElement) => {
                 const obj = tagElement.querySelector('.tag');
-                return obj.getAttribute('data-id');
+                return obj.getAttribute('tag-id');
             });
             // 你可以在这里发送新排序数据到后端
             UpdateUerTagOrder(userId,workspace.workspace_id,orderedTags)
@@ -606,11 +667,13 @@ function selection(quoteId,fatherFrame,displayFrame,workspace) {
     fatherFrame.appendChild(body);
 }
 
-async function miniTagMenu(quoteId,fatherFrame,displayFrame,userId) {
+export async function miniTagMenu(quoteId,fatherFrame,displayFrame,userId,userTags) {
     const userSelection = document.createElement('div');
     userSelection.classList.add('mini-tagMenu');
     userSelection.innerHTML = '';
-    const userTags = await getUserOwnTags(userId,quoteId,'');
+    if (!userTags){
+        userTags = await getUserOwnTags(userId,quoteId,'');
+    }
     workspace_list = []
     for (let workspace of userTags) {
         console.log('workspace',workspace)
@@ -634,8 +697,6 @@ async function quoteTags(userId,quoteId,frame,editable) {
         console.error("Tag container not found in the frame.");
         return;
     }
-
-    try {
         const tagDict = await QuoteTags(userId, quoteId,'create_at');
         if (!tagDict || !Array.isArray(tagDict.tags)) {
             throw new Error("Invalid tag data");
@@ -655,17 +716,12 @@ async function quoteTags(userId,quoteId,frame,editable) {
         tagDict.tags.forEach(tag => {
             createTag(quoteId,tagFrame,'',tag,tag.editable,editable?tag.editable:false, false,false);
         });
-
         await showDeleteButton(tagFrame,false)
-
-
-        // 初始化当前 frame 的弹窗
-    } catch (error) {
-        console.error("Failed to load or display tags:", error);
-    }
+        return tagDict
 }
 
 export async function loadTagButtons(userId, quoteId, frame) {
-    await quoteTags(userId,quoteId,frame,true)
+    const tagsDict = await quoteTags(userId,quoteId,frame,true)
     await initFramePopup(userId,quoteId,frame);
+    return tagsDict
 }
