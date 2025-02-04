@@ -73,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Quotely.wsgi.application'
+WSGI_APPLICATION = 'Quotely.wsgi.app'
 
 
 # Database
